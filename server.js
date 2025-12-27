@@ -1,36 +1,180 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-require('dotenv').config();
+const dotenv = require('dotenv');
+const sgMail = require('@sendgrid/mail');
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const DEBUG_LOG = path.join(__dirname, 'debug.log');
+const PROGRAMS_DIR = path.join(__dirname, 'programs');
 
-const publicDir = path.join(__dirname, 'public');
-const programsDir = path.join(__dirname, 'programs');
-
-if (!fs.existsSync(programsDir)) {
-  fs.mkdirSync(programsDir, { recursive: true });
+// Ensure programs directory exists
+if (!fs.existsSync(PROGRAMS_DIR)) {
+  fs.mkdirSync(PROGRAMS_DIR, { recursive: true });
 }
 
+// Configure SendGrid
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
+
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(publicDir));
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Example endpoint to save JSON to programs/ — adapt as needed
-app.post('/api/save-program', (req, res) => {
-  const id = Date.now();
-  const filename = path.join(programsDir, `program-${id}.json`);
-  fs.writeFile(filename, JSON.stringify(req.body, null, 2), (err) => {
-    if (err) return res.status(500).json({ error: 'Failed to write file' });
-    res.json({ ok: true, file: `program-${id}.json` });
-  });
+// Utility: Log to file and console
+function log(message) {
+  const timestamp = new Date().toISOString();
+  const logMessage = `[${timestamp}] ${message}`;
+  console.log(logMessage);
+  fs.appendFileSync(DEBUG_LOG, logMessage + '\n');
+}
+
+// Utility: Generate a workout program
+function generateWorkoutProgram(userId, preferences) {
+  return {
+    id: `program-${Date.now()}`,
+    userId,
+    name: preferences.name || 'Workout Program',
+    duration: preferences.duration || 12,
+    difficulty: preferences.difficulty || 'intermediate',
+    createdAt: new Date().toISOString(),
+    weeks: Array.from({ length: preferences.duration || 12 }, (_, i) => ({
+      week: i + 1,
+      workouts: [
+        { day: 'Monday', exercise: 'Strength Training', duration: 60 },
+        { day: 'Wednesday', exercise: 'Cardio', duration: 45 },
+        { day: 'Friday', exercise: 'Strength Training', duration: 60 }
+      ]
+    }))
+  };
+}
+
+// Utility: Send email via SendGrid
+async function sendEmail(to, subject, htmlContent) {
+  if (!process.env.SENDGRID_API_KEY) {
+    log(`Email not sent (no SENDGRID_API_KEY): ${subject} to ${to}`);
+    return;
+  }
+
+  try {
+    await sgMail.send({
+      to,
+      from: process.env.SENDGRID_FROM_EMAIL || 'noreply@essor-active.com',
+      subject,
+      html: htmlContent
+    });
+    log(`Email sent: ${subject} to ${to}`);
+  } catch (err) {
+    log(`Error sending email: ${err.message}`);
+  }
+}
+
+// Routes
+
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.get('/health', (req, res) => res.json({ status: 'ok' }));
+// POST /api/send-program - Generate and send a workout program
+app.post('/api/send-program', async (req, res) => {
+  try {
+    const { email, userId, preferences } = req.body;
 
+    if (!email || !userId) {
+      return res.status(400).json({ error: 'Email and userId required' });
+    }
+
+    log(`Generating program for user ${userId}`);
+    const program = generateWorkoutProgram(userId, preferences || {});
+
+    // Save program to file
+    const programFile = path.join(PROGRAMS_DIR, `${program.id}.json`);
+    fs.writeFileSync(programFile, JSON.stringify(program, null, 2));
+    log(`Program saved: ${program.id}`);
+
+    // Send email
+    const emailHtml = `
+      <h2>Your Workout Program: ${program.name}</h2>
+      <p>Duration: ${program.duration} weeks</p>
+      <p>Difficulty: ${program.difficulty}</p>
+      <p><a href="${process.env.APP_URL || 'http://localhost:3000'}/my-program.html?id=${program.id}">View your program</a></p>
+    `;
+    await sendEmail(email, `Your Workout Program: ${program.name}`, emailHtml);
+
+    res.json({ ok: true, programId: program.id, message: 'Program generated and emailed' });
+  } catch (err) {
+    log(`Error in /api/send-program: ${err.message}`);
+    res.status(500).json({ error: 'Failed to generate program' });
+  }
+});
+
+// POST /api/admin-login - Admin authentication
+app.post('/api/admin-login', (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    // Simple validation (in production, use proper auth with hashed passwords)
+    const adminUser = process.env.ADMIN_USERNAME || 'admin';
+    const adminPass = process.env.ADMIN_PASSWORD || 'password';
+
+    if (username === adminUser && password === adminPass) {
+      log(`Admin login successful for ${username}`);
+      res.json({ ok: true, token: 'mock-token-' + Date.now() });
+    } else {
+      log(`Admin login failed for ${username}`);
+      res.status(401).json({ error: 'Invalid credentials' });
+    }
+  } catch (err) {
+    log(`Error in /api/admin-login: ${err.message}`);
+    res.status(500).json({ error: 'Login failed' });
+  }
+});
+
+// GET /api/get-program - Retrieve a specific program
+app.get('/api/get-program/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const programFile = path.join(PROGRAMS_DIR, `${id}.json`);
+
+    if (!fs.existsSync(programFile)) {
+      return res.status(404).json({ error: 'Program not found' });
+    }
+
+    const program = JSON.parse(fs.readFileSync(programFile, 'utf8'));
+    log(`Program retrieved: ${id}`);
+    res.json(program);
+  } catch (err) {
+    log(`Error in /api/get-program: ${err.message}`);
+    res.status(500).json({ error: 'Failed to retrieve program' });
+  }
+});
+
+// Serve index.html for root path
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not found' });
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  log(`Server error: ${err.message}`);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
+// Start server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  log(`Server running on port ${PORT}`);
+  log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 const http = require('http');
 const fs = require('fs');
