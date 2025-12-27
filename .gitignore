@@ -1,0 +1,18 @@
+# Core
+node_modules/
+.env
+debug.log
+.DS_Store
+
+# Temporary / Backups
+_BACKUP/
+programs/*.json
+
+# Build outputs
+dist/
+build/
+
+# Android specific
+android/app/build/
+android/.gradle/
+android/local.properties

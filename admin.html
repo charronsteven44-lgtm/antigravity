@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html class="dark" lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Espace Admin - ESSOR ACTIVE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-black min-h-screen flex items-center justify-center p-4">
+    <div class="bg-gray-900 border border-gray-800 p-8 rounded-2xl max-w-md w-full shadow-2xl">
+        <h1 class="text-2xl font-bold text-green-500 mb-6 text-center">🔐 Accès Administrateur</h1>
+
+        <form id="admin-form" class="space-y-4">
+            <div>
+                <label class="block text-gray-400 text-sm mb-2">Mot de passe Owner</label>
+                <input type="password" id="pwd"
+                    class="w-full bg-black border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-green-500 focus:outline-none"
+                    placeholder="••••••••">
+            </div>
+
+            <button type="submit"
+                class="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-3 rounded-lg transition-colors">
+                Se connecter
+            </button>
+        </form>
+
+        <p id="status" class="text-center text-sm text-gray-500 mt-4"></p>
+    </div>
+
+    <script>
+        document.getElementById('admin-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const pwd = document.getElementById('pwd').value;
+            const status = document.getElementById('status');
+
+            status.textContent = "Vérification...";
+            status.className = "text-center text-sm text-yellow-500 mt-4";
+
+            try {
+                const API_URL = 'https://essor-api.onrender.com/api/admin-login';
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pwd })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    status.textContent = "Succès ! Redirection...";
+                    status.className = "text-center text-sm text-green-500 mt-4";
+                    setTimeout(() => window.location.href = '/', 1000); // Go home
+                } else {
+                    status.textContent = "Accès refusé : " + (data.error || "Erreur");
+                    status.className = "text-center text-sm text-red-500 mt-4";
+                }
+            } catch (err) {
+                status.textContent = "Erreur de connexion";
+            }
+        });
+    </script>
+</body>
+
+</html>
