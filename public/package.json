@@ -1,18 +1,4 @@
 {
-  "name": "essor-active-reboot",
-  "version": "1.0.0",
-  "description": "Clean start for ESSOR ACTIVE",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "express": "^4.18.2",
-    "dotenv": "^16.0.3",
-    "@sendgrid/mail": "^7.7.0"
-  }
-}
-{
     "name": "essor-active-reboot",
     "version": "1.0.0",
     "description": "Clean start for ESSOR ACTIVE",

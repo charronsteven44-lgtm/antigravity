@@ -1,3 +1,37 @@
+const express = require('express');
+const path = require('path');
+const fs = require('fs');
+require('dotenv').config();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+const publicDir = path.join(__dirname, 'public');
+const programsDir = path.join(__dirname, 'programs');
+
+if (!fs.existsSync(programsDir)) {
+  fs.mkdirSync(programsDir, { recursive: true });
+}
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(publicDir));
+
+// Example endpoint to save JSON to programs/ — adapt as needed
+app.post('/api/save-program', (req, res) => {
+  const id = Date.now();
+  const filename = path.join(programsDir, `program-${id}.json`);
+  fs.writeFile(filename, JSON.stringify(req.body, null, 2), (err) => {
+    if (err) return res.status(500).json({ error: 'Failed to write file' });
+    res.json({ ok: true, file: `program-${id}.json` });
+  });
+});
+
+app.get('/health', (req, res) => res.json({ status: 'ok' }));
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
