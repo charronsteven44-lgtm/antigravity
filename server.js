@@ -141,21 +141,27 @@ app.post('/api/send-program', async (req, res) => {
     log(`Saved program ${program.id} for ${data.email}`);
 
     if (sgMail && data.email) {
-      const PRODUCTION_URL = process.env.APP_URL || "https://essor-active.com";
-      const programLink = `${PRODUCTION_URL}/my-program-pro.html?id=${program.id}`;
-      const msg = {
-        to: data.email,
-        from: process.env.SENDGRID_FROM_EMAIL || 'contact@essor-active.com',
-        subject: `🔥 Ton Programme : ${program.title}`,
-        html: generateEmailHTML(data, program, programLink)
-      };
-      await sgMail.send(msg);
-      log(`Email sent to ${data.email}`);
+      try {
+        const PRODUCTION_URL = process.env.APP_URL || "https://essor-active.com";
+        const programLink = `${PRODUCTION_URL}/my-program-pro.html?id=${program.id}`;
+        const msg = {
+          to: data.email,
+          from: process.env.SENDGRID_FROM_EMAIL || 'contact@essor-active.com',
+          subject: `🔥 Ton Programme : ${program.title}`,
+          html: generateEmailHTML(data, program, programLink)
+        };
+        await sgMail.send(msg);
+        log(`Email sent to ${data.email}`);
+      } catch (emailErr) {
+        log(`Email failed for ${data.email}: ${emailErr.message}`);
+        if (emailErr.response) log(`SendGrid Error Detail: ${JSON.stringify(emailErr.response.body)}`);
+        // Do not throw here, allow the response to be successful since data is saved.
+      }
     }
 
     res.json({ success: true, programId: program.id });
   } catch (err) {
-    log(`Error: ${err.message}`);
+    log(`Global API Error: ${err.message}`);
     res.status(500).json({ success: false, error: err.message });
   }
 });
