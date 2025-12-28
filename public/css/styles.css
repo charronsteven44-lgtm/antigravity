@@ -1,0 +1,6 @@
+/*! Tailwind CSS v4.0.0 | MIT License | https://tailwindcss.com */
+@import "tailwindcss";
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+}
