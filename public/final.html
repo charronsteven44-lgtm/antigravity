@@ -16,10 +16,14 @@
             darkMode: "class",
             theme: {
                 extend: {
-                    colors: { "primary": "#49e619", "primary-hover": "#3cd010", "background-dark": "#152111", "surface-dark": "#1f2e1a" },
+                    colors: {
+                        "primary": "#ffffff",
+                        "primary-hover": "#f3f4f6",
+                        "background-dark": "#000000",
+                        "surface-dark": "#111111"
+                    },
                     fontFamily: { "display": ["Manrope", "sans-serif"] },
-                    borderRadius: { "DEFAULT": "1rem", "lg": "1.5rem", "2xl": "3rem" },
-                    animation: { "spin": "spin 1s linear infinite" }
+                    borderRadius: { "DEFAULT": "0.75rem", "lg": "1rem", "2xl": "2rem" }
                 }
             }
         }
@@ -27,74 +31,67 @@
     <style>
         body {
             min-height: 100vh;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
         }
 
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+
+        .glass-card {
+            background: rgba(17, 17, 17, 0.5);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
 
-<body class="bg-[#0a0f08] min-h-screen font-display flex flex-col items-center justify-start gap-10 py-10 px-4">
+<body class="bg-black min-h-screen font-display flex flex-col items-center justify-center py-10 px-4">
     <div
-        class="relative w-full max-w-[400px] bg-background-dark rounded-[40px] shadow-2xl border-8 border-[#2a3626] overflow-hidden flex flex-col min-h-[850px]">
-        <div class="p-8 pt-12">
-            <h1 class="text-3xl font-extrabold text-white mb-2">Ton programme <br><span class="text-primary">est prêt
-                    !</span></h1>
-            <p class="text-gray-400 mb-8">Basé sur tes réponses, nous avons conçu ta routine idéale.</p>
+        class="relative w-full max-w-[500px] glass-card rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col p-10 text-center gap-8">
 
-            <div class="bg-surface-dark rounded-2xl p-6 border border-white/5 space-y-4 mb-8">
-                <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center"><span
-                            class="material-symbols-outlined text-primary">target</span></div>
-                    <div>
-                        <p class="text-xs text-gray-400 uppercase">Objectif</p>
-                        <p class="text-white font-bold text-lg" id="user-goal">...</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center"><span
-                            class="material-symbols-outlined text-primary">calendar_month</span></div>
-                    <div>
-                        <p class="text-xs text-gray-400 uppercase">Fréquence</p>
-                        <p class="text-white font-bold text-lg" id="user-frequency">...</p>
-                    </div>
-                </div>
+        <div class="flex justify-center">
+            <div
+                class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.2)]">
+                <span class="material-symbols-outlined text-black text-4xl">verified</span>
             </div>
-
-            <form id="lead-form" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-1">Prénom</label>
-                    <input type="text" id="name-input" required
-                        class="w-full bg-surface-dark border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary focus:ring-0"
-                        placeholder="Ton prénom">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-1">Email</label>
-                    <input type="email" id="email-input" required
-                        class="w-full bg-surface-dark border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary focus:ring-0"
-                        placeholder="ton@email.com">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-1">Téléphone (Optionnel)</label>
-                    <input type="tel" id="phone-input"
-                        class="w-full bg-surface-dark border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary focus:ring-0"
-                        placeholder="06 12 34 56 78">
-                </div>
-
-                <div class="pt-4">
-                    <button type="submit"
-                        class="w-full bg-primary hover:bg-primary-hover text-background-dark text-lg font-bold py-4 rounded-full shadow-[0_4px_20px_rgba(73,230,25,0.3)] transition-all active:scale-[0.98] flex items-center justify-center gap-2">
-                        <span>Recevoir mon programme</span>
-                        <span class="material-symbols-outlined">send</span>
-                    </button>
-                    <p class="text-center text-xs text-gray-500 mt-4">En cliquant, tu acceptes de recevoir nos conseils
-                        par email.</p>
-                </div>
-            </form>
         </div>
+
+        <div>
+            <h1 class="text-4xl font-extrabold text-white mb-4 leading-tight">C'est le début d'une nouvelle <span
+                    class="text-white/60 italic">vie</span>.</h1>
+            <p class="text-white/40 text-lg">Votre programme personnalisé est prêt et une copie vous a été envoyée par
+                email.</p>
+        </div>
+
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 text-left space-y-4">
+            <p class="text-white/30 text-xs font-bold uppercase tracking-widest text-center mb-2">Prochaines étapes</p>
+            <div class="flex items-start gap-4">
+                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-sm text-white/60">mail</span>
+                </div>
+                <p class="text-white/60 text-sm">Vérifiez vos emails (et dossiers indésirables) pour votre accès
+                    complet.</p>
+            </div>
+            <div class="flex items-start gap-4">
+                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-sm text-white/60">dashboard</span>
+                </div>
+                <p class="text-white/60 text-sm">Explorez votre tableau de bord interactif pour suivre vos progrès.</p>
+            </div>
+        </div>
+
+        <div class="pt-4">
+            <button onclick="window.location.href='dashboard.html'"
+                class="w-full bg-white hover:bg-gray-200 text-black text-lg font-bold py-5 rounded-2xl shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 group">
+                <span>Accéder à mon Dashboard</span>
+                <span
+                    class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+            </button>
+        </div>
+
+        <p class="text-white/20 text-xs">ESSOR ACTIVE • TOUT EST POSSIBLE</p>
     </div>
-    <script src="js/final.js"></script>
 </body>
 
 </html>
