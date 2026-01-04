@@ -1,0 +1,6 @@
+node_modules/
+_BACKUP/
+debug.log
+.env
+*.log
+programs/*.json

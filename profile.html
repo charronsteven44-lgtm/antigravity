@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html class="dark" lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Mon Profil - ESSOR ACTIVE</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#49e619", "primary-dark": "#36b012", "background-dark": "#152111", "surface-dark": "#1e2e19", "surface-light": "#ffffff" },
+                    fontFamily: { "display": ["Manrope", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "1.5rem", "2xl": "2.5rem", "full": "9999px" },
+                    boxShadow: { 'glow': '0 0 15px rgba(73, 230, 25, 0.3)' }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        body {
+            min-height: 100vh;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-black font-display flex items-center justify-center min-h-screen p-0 sm:p-4">
+    <div
+        class="relative flex flex-col h-[100dvh] w-full max-w-md bg-[#f6f8f6] dark:bg-background-dark sm:rounded-[3rem] shadow-2xl overflow-hidden ring-8 ring-black/5 dark:ring-white/5">
+
+        <!-- Header -->
+        <header class="flex items-center justify-between px-6 pt-6 pb-2 z-20">
+            <button onclick="window.history.back()"
+                class="p-2 -ml-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-slate-800 dark:text-white transition-colors">
+                <span class="material-symbols-outlined text-3xl">arrow_back</span>
+            </button>
+            <h1 class="text-xl font-bold text-slate-800 dark:text-white">Mon Profil</h1>
+            <div class="w-10"></div>
+        </header>
+
+        <!-- Content -->
+        <main class="flex-1 overflow-y-auto px-6 py-6 pb-24 space-y-8">
+
+            <!-- Avatar Section -->
+            <div class="flex flex-col items-center">
+                <div class="relative">
+                    <div class="w-28 h-28 rounded-full border-4 border-primary p-1 bg-surface-dark shadow-glow">
+                        <div
+                            class="w-full h-full rounded-full bg-slate-200 dark:bg-white/10 flex items-center justify-center overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200"
+                                alt="Avatar" class="w-full h-full object-cover opacity-90">
+                        </div>
+                    </div>
+                    <button
+                        class="absolute bottom-0 right-0 p-2 bg-primary rounded-full text-black shadow-lg hover:scale-105 transition-transform">
+                        <span class="material-symbols-outlined text-[20px]">edit</span>
+                    </button>
+                </div>
+                <h2 class="mt-4 text-2xl font-bold text-slate-900 dark:text-white" id="profile-name">Utilisateur</h2>
+                <p class="text-primary font-medium text-sm">Membre Premium</p>
+            </div>
+
+            <!-- Stats/Info Cards -->
+            <div class="grid grid-cols-2 gap-4">
+                <div
+                    class="bg-white dark:bg-surface-dark p-5 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
+                    <p class="text-xs text-gray-500 uppercase tracking-wide font-bold mb-1">Objectif</p>
+                    <p class="text-slate-900 dark:text-white font-bold text-lg truncate" id="profile-goal">Non défini
+                    </p>
+                </div>
+                <div
+                    class="bg-white dark:bg-surface-dark p-5 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
+                    <p class="text-xs text-gray-500 uppercase tracking-wide font-bold mb-1">Fréquence</p>
+                    <p class="text-slate-900 dark:text-white font-bold text-lg" id="profile-freq">3x / sem</p>
+                </div>
+            </div>
+
+            <!-- Settings List -->
+            <div class="space-y-3">
+                <p class="text-sm font-bold text-gray-400 uppercase tracking-wider pl-1">Paramètres</p>
+
+                <button
+                    class="w-full flex items-center justify-between p-4 bg-white dark:bg-surface-dark rounded-2xl border border-slate-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined">person</span>
+                        </div>
+                        <span class="text-slate-900 dark:text-white font-bold">Informations personnelles</span>
+                    </div>
+                    <span class="material-symbols-outlined text-gray-400 group-hover:text-primary">chevron_right</span>
+                </button>
+
+                <button
+                    class="w-full flex items-center justify-between p-4 bg-white dark:bg-surface-dark rounded-2xl border border-slate-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined">notifications</span>
+                        </div>
+                        <span class="text-slate-900 dark:text-white font-bold">Notifications</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-bold bg-primary text-black px-2 py-0.5 rounded">ON</span>
+                        <span
+                            class="material-symbols-outlined text-gray-400 group-hover:text-primary">chevron_right</span>
+                    </div>
+                </button>
+
+                <button
+                    class="w-full flex items-center justify-between p-4 bg-white dark:bg-surface-dark rounded-2xl border border-slate-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-500">
+                            <span class="material-symbols-outlined">logout</span>
+                        </div>
+                        <span class="text-red-500 font-bold">Déconnexion</span>
+                    </div>
+                </button>
+
+            </div>
+
+        </main>
+
+        <!-- Bottom Nav (Shared) -->
+        <nav
+            class="absolute bottom-0 left-0 w-full z-50 bg-[#f6f8f6]/95 dark:bg-[#131811]/95 backdrop-blur-lg border-t border-slate-200 dark:border-[#2c3829] pb-6 pt-2">
+            <div class="flex justify-around items-center px-2">
+                <a href="dashboard.html"
+                    class="flex flex-col items-center justify-center gap-1 min-w-[64px] group opacity-60 hover:opacity-100 transition-opacity">
+                    <span
+                        class="material-symbols-outlined text-[28px] text-slate-800 dark:text-white group-hover:text-primary">home</span>
+                    <span
+                        class="text-[10px] font-medium text-slate-800 dark:text-white group-hover:text-primary">Accueil</span>
+                </a>
+                <a href="#" class="flex flex-col items-center justify-center gap-1 min-w-[64px] group">
+                    <span class="material-symbols-outlined text-[28px] text-primary">person</span>
+                    <span class="text-[10px] font-medium text-primary">Profil</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        // Load data from localStorage simulation
+        document.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('responses');
+            if (saved) {
+                const data = JSON.parse(saved);
+                // Goal is Q5 in new structure, Q6 in list? It varies. Let's try flexible
+                // Based on questionnaire.js: Q1 is Goal
+                const goalMap = {
+                    'perte_poids': 'Perte de Poids',
+                    'muscle': 'Prise de Masse',
+                    'santé': 'Santé & Forme',
+                    'performance': 'Performance'
+                };
+
+                if (data[1]) document.getElementById('profile-goal').textContent = data[1];
+                if (data[7]) document.getElementById('profile-freq').textContent = data[7] + 'x / sem';
+                if (data[10]) document.getElementById('profile-name').textContent = data[10];
+            }
+        });
+    </script>
+</body>
+
+</html>

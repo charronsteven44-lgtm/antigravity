@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html class="dark" lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ESSOR ACTIVE - Application</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#49e619", "primary-hover": "#3cd010", "background-dark": "#0a0f08", "surface-dark": "#152111" },
+                    fontFamily: { "display": ["Manrope", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "1.5rem", "2xl": "3rem" }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .section-content {
+            display: none;
+        }
+
+        .section-content.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="bg-[#0a0f08] min-h-screen font-display">
+    <div class="max-w-md mx-auto min-h-screen bg-background-dark flex flex-col">
+        <!-- Header -->
+        <header class="p-6 pb-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-extrabold text-white">ESSOR<span class="text-primary">ACTIVE</span></h1>
+                    <p class="text-gray-400 text-sm">Performance • Transformation</p>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary">person</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="flex-1 px-6 pb-24 overflow-y-auto">
+            <!-- Programme Section -->
+            <div id="section-programme" class="section-content active">
+                <h2 class="text-xl font-bold text-white mb-4">Mon Programme</h2>
+                <div class="bg-surface-dark rounded-3xl p-6 border border-primary/20 mb-4">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary text-3xl">fitness_center</span>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-400 uppercase">Programme actuel</p>
+                            <p class="text-white font-bold text-lg">7 Jours Personnalisé</p>
+                        </div>
+                    </div>
+                    <button onclick="window.location.href='program-detailed.html'"
+                        class="w-full bg-primary hover:bg-primary-hover text-background-dark font-bold py-3 rounded-xl transition-all">
+                        Voir le programme complet
+                    </button>
+                </div>
+            </div>
+
+            <!-- Suivi Calorique Section -->
+            <div id="section-calories" class="section-content">
+                <h2 class="text-xl font-bold text-white mb-4">Suivi Calorique</h2>
+                <div class="bg-surface-dark rounded-3xl p-6 border border-white/5 mb-4">
+                    <div class="text-center mb-6">
+                        <p class="text-gray-400 text-sm mb-2">Aujourd'hui</p>
+                        <p class="text-5xl font-black text-white">1850</p>
+                        <p class="text-gray-400 text-sm">/ 2200 kcal</p>
+                    </div>
+                    <div class="w-full bg-gray-800 h-3 rounded-full overflow-hidden">
+                        <div class="bg-primary h-full rounded-full" style="width: 84%"></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 mt-6">
+                        <div class="text-center">
+                            <p class="text-xs text-gray-400 mb-1">Protéines</p>
+                            <p class="text-white font-bold">120g</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-xs text-gray-400 mb-1">Glucides</p>
+                            <p class="text-white font-bold">180g</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-xs text-gray-400 mb-1">Lipides</p>
+                            <p class="text-white font-bold">60g</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nutrition Section -->
+            <div id="section-nutrition" class="section-content">
+                <h2 class="text-xl font-bold text-white mb-4">Nutrition</h2>
+                <div class="space-y-4">
+                    <div class="bg-surface-dark rounded-2xl p-5 border border-white/5">
+                        <h3 class="text-white font-bold mb-2">Plan Alimentaire</h3>
+                        <p class="text-gray-400 text-sm mb-4">Adapté à votre objectif de prise de muscle</p>
+                        <button class="text-primary font-bold text-sm">Voir le plan →</button>
+                    </div>
+                    <div class="bg-surface-dark rounded-2xl p-5 border border-white/5">
+                        <h3 class="text-white font-bold mb-2">Recettes Recommandées</h3>
+                        <p class="text-gray-400 text-sm mb-4">15 recettes adaptées à vos besoins</p>
+                        <button class="text-primary font-bold text-sm">Explorer →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lexique Section -->
+            <div id="section-lexique" class="section-content">
+                <h2 class="text-xl font-bold text-white mb-4">Lexique</h2>
+                <div class="space-y-3">
+                    <div class="bg-surface-dark rounded-2xl p-4 border border-white/5 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary">fitness_center</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-white font-bold">Squat</p>
+                            <p class="text-gray-400 text-xs">Exercice de base pour les jambes</p>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-500">chevron_right</span>
+                    </div>
+                    <div class="bg-surface-dark rounded-2xl p-4 border border-white/5 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary">fitness_center</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-white font-bold">Pompes</p>
+                            <p class="text-gray-400 text-xs">Renforcement du haut du corps</p>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-500">chevron_right</span>
+                    </div>
+                    <div class="bg-surface-dark rounded-2xl p-4 border border-white/5 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary">fitness_center</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-white font-bold">Planche</p>
+                            <p class="text-gray-400 text-xs">Gainage et stabilité du core</p>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-500">chevron_right</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Abonnement Section -->
+            <div id="section-abonnement" class="section-content">
+                <h2 class="text-xl font-bold text-white mb-4">Abonnement</h2>
+                <div class="bg-surface-dark rounded-3xl p-6 border border-primary/20 mb-4">
+                    <div class="text-center mb-6">
+                        <div class="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full mb-4">
+                            <span class="material-symbols-outlined text-primary">stars</span>
+                            <span class="text-primary font-bold text-sm">GRATUIT</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">Vous utilisez la version gratuite</p>
+                    </div>
+                    <button onclick="window.location.href='subscription.html'"
+                        class="w-full bg-primary hover:bg-primary-hover text-background-dark font-bold py-4 rounded-xl shadow-[0_4px_20px_rgba(73,230,25,0.3)] transition-all">
+                        Passer à Premium
+                    </button>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3 text-sm">
+                        <span class="material-symbols-outlined text-primary">check</span>
+                        <span class="text-gray-300">Programme personnalisé complet</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-sm">
+                        <span class="material-symbols-outlined text-primary">check</span>
+                        <span class="text-gray-300">Suivi nutrition avancé</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-sm">
+                        <span class="material-symbols-outlined text-primary">check</span>
+                        <span class="text-gray-300">Support prioritaire</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav
+            class="fixed bottom-0 left-0 right-0 bg-surface-dark/95 backdrop-blur-lg border-t border-white/10 pb-6 pt-2">
+            <div class="max-w-md mx-auto flex justify-around items-center px-2">
+                <button onclick="switchSection('programme')" data-section="programme"
+                    class="nav-item flex flex-col items-center gap-1 min-w-[64px] active">
+                    <span class="material-symbols-outlined text-2xl">fitness_center</span>
+                    <span class="text-[10px] font-medium">Programme</span>
+                </button>
+                <button onclick="switchSection('calories')" data-section="calories"
+                    class="nav-item flex flex-col items-center gap-1 min-w-[64px]">
+                    <span class="material-symbols-outlined text-2xl">restaurant</span>
+                    <span class="text-[10px] font-medium">Calories</span>
+                </button>
+                <button onclick="switchSection('nutrition')" data-section="nutrition"
+                    class="nav-item flex flex-col items-center gap-1 min-w-[64px]">
+                    <span class="material-symbols-outlined text-2xl">nutrition</span>
+                    <span class="text-[10px] font-medium">Nutrition</span>
+                </button>
+                <button onclick="switchSection('lexique')" data-section="lexique"
+                    class="nav-item flex flex-col items-center gap-1 min-w-[64px]">
+                    <span class="material-symbols-outlined text-2xl">menu_book</span>
+                    <span class="text-[10px] font-medium">Lexique</span>
+                </button>
+                <button onclick="switchSection('abonnement')" data-section="abonnement"
+                    class="nav-item flex flex-col items-center gap-1 min-w-[64px]">
+                    <span class="material-symbols-outlined text-2xl">stars</span>
+                    <span class="text-[10px] font-medium">Premium</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <script src="js/app-navigation.js"></script>
+</body>
+
+</html>

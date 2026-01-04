@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html class="dark" lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Mon Programme - ESSOR ACTIVE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#49e619", "primary-hover": "#3cd010", "background-dark": "#152111", "surface-dark": "#1f2e1a" },
+                    fontFamily: { "display": ["Manrope", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "1.5rem", "2xl": "3rem" }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="bg-[#0a0f08] min-h-screen font-display">
+    <div class="max-w-4xl mx-auto py-10 px-4">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center gap-3 mb-4">
+                <div class="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary text-4xl">fitness_center</span>
+                </div>
+            </div>
+            <h1 class="text-4xl font-extrabold text-white mb-3">Mon Programme<br><span class="text-primary">ESSOR
+                    ACTIVE</span></h1>
+            <div class="inline-flex items-center gap-2 bg-surface-dark px-5 py-2 rounded-full border border-primary/20">
+                <span class="material-symbols-outlined text-primary text-sm">auto_awesome</span>
+                <span class="text-gray-300 text-sm font-medium" id="program-type">Programme Personnalisé</span>
+            </div>
+        </div>
+
+        <!-- Program Overview -->
+        <div class="bg-surface-dark rounded-3xl p-8 border border-white/5 mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6">📋 Votre Programme Hebdomadaire</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="text-3xl font-black text-primary mb-2" id="frequency-display">-</div>
+                    <div class="text-sm text-gray-400 uppercase tracking-wider">Séances / semaine</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-black text-primary mb-2" id="duration-display">-</div>
+                    <div class="text-sm text-gray-400 uppercase tracking-wider">Minutes / séance</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-black text-primary mb-2" id="goal-display">-</div>
+                    <div class="text-sm text-gray-400 uppercase tracking-wider">Objectif</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7-Day Program -->
+        <div class="space-y-6" id="program-container">
+            <!-- Will be populated by JavaScript -->
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-12 flex gap-4">
+            <button onclick="window.location.href='subscription.html'"
+                class="flex-1 bg-primary hover:bg-primary-hover text-background-dark text-lg font-bold py-5 rounded-full shadow-[0_4px_30px_rgba(73,230,25,0.4)] transition-all active:scale-[0.98]">
+                Débloquer Premium
+            </button>
+            <button onclick="window.location.href='dashboard.html'"
+                class="flex-1 bg-white/5 hover:bg-white/10 text-white text-lg font-bold py-5 rounded-full border border-white/10 transition-all active:scale-[0.98]">
+                Tableau de bord
+            </button>
+        </div>
+    </div>
+
+    <script src="js/program-generator.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const responses = JSON.parse(localStorage.getItem('responses') || '{}');
+            const program = generateProgram(responses);
+
+            // Update overview
+            document.getElementById('frequency-display').textContent = program.frequency || '3';
+            document.getElementById('duration-display').textContent = program.duration || '30';
+            document.getElementById('goal-display').textContent = program.goal || 'Fitness';
+            document.getElementById('program-type').textContent = program.title || 'Programme Personnalisé';
+
+            // Render 7-day schedule
+            const container = document.getElementById('program-container');
+            program.schedule.forEach((day, index) => {
+                const dayCard = createDayCard(day, index);
+                container.appendChild(dayCard);
+            });
+        });
+
+        function createDayCard(day, index) {
+            const isRest = day.type === 'rest';
+            const card = document.createElement('div');
+            card.className = `bg-surface-dark rounded-3xl p-8 border ${isRest ? 'border-white/5 opacity-70' : 'border-primary/20'} transition-all hover:border-primary/40`;
+
+            card.innerHTML = `
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-14 h-14 rounded-full ${isRest ? 'bg-white/5' : 'bg-primary/20'} flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-2xl ${isRest ? 'text-gray-500' : 'text-primary'}">${isRest ? 'hotel' : 'fitness_center'}</span>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-400 uppercase tracking-widest font-bold">${day.day}</p>
+                        <p class="text-white font-bold text-xl">${day.title}</p>
+                    </div>
+                </div>
+                ${!isRest ? `
+                    <div class="space-y-6">
+                        ${day.sections.map(section => `
+                            <div class="border-l-2 border-primary/30 pl-6">
+                                <h4 class="text-primary font-bold text-sm uppercase tracking-wider mb-3">${section.name}</h4>
+                                <div class="space-y-2 text-gray-300 text-sm">
+                                    ${section.exercises.map(ex => `
+                                        <div class="flex items-start gap-2">
+                                            <span class="text-primary mt-1">•</span>
+                                            <span>${ex}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : `
+                    <p class="text-gray-400 text-sm">${day.description}</p>
+                `}
+            `;
+
+            return card;
+        }
+    </script>
+</body>
+
+</html>

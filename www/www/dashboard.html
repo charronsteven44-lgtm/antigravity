@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html class="dark" lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Tableau de Bord - ESSOR ACTIVE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="js/program-logic.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#49e619", "primary-dark": "#36b012", "background-light": "#f6f8f6", "background-dark": "#152111", "surface-dark": "#1E291B" },
+                    fontFamily: { "display": ["Manrope", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "1.5rem", "2xl": "2.5rem" },
+                    boxShadow: { 'neon': '0 0 15px rgba(73, 230, 25, 0.3)' }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        body {
+            min-height: 100vh;
+        }
+
+        /* Simple Circular Progress */
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-black font-display flex items-center justify-center min-h-screen p-0 sm:p-4">
+    <div id="app-container"
+        class="relative flex flex-col h-[100dvh] w-full max-w-md bg-[#f6f8f6] dark:bg-background-dark sm:rounded-[3rem] shadow-2xl overflow-hidden ring-8 ring-black/5 dark:ring-white/5 transition-all duration-500">
+
+        <!-- Header -->
+        <header class="flex items-center justify-between px-6 pt-6 pb-2 shrink-0">
+            <div class="flex flex-col">
+                <p class="text-gray-500 dark:text-[#a4b89d] text-sm font-medium">Tableau de Bord</p>
+                <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white" id="welcome-text">Bonjour !
+                </h1>
+            </div>
+            <div class="relative cursor-pointer group" onclick="window.location.href='/profile.html'">
+                <div
+                    class="w-12 h-12 rounded-full border-2 border-primary p-0.5 bg-gray-800 overflow-hidden shadow-neon transition-transform group-hover:scale-110">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200"
+                        class="w-full h-full object-cover rounded-full">
+                </div>
+                <div class="absolute top-0 right-0 w-3 h-3 bg-primary rounded-full border-2 border-background-dark">
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto px-6 py-4 pb-24 space-y-6">
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 gap-4">
+                <!-- Calories Card -->
+                <div
+                    class="bg-white dark:bg-surface-dark p-4 rounded-3xl border border-white/5 shadow-sm min-h-[140px] flex flex-col justify-center relative overflow-hidden">
+                    <div class="text-center flex flex-col items-center">
+                        <h3 class="text-gray-400 text-[10px] font-bold uppercase mb-2">Calories</h3>
+                        <span class="text-2xl font-black text-slate-900 dark:text-white">1850</span>
+                        <div class="w-full bg-gray-200 dark:bg-gray-800 h-1 rounded-full mt-2 overflow-hidden">
+                            <div class="bg-primary h-1 rounded-full w-3/4"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Level Card -->
+                <div
+                    class="bg-white dark:bg-surface-dark p-4 rounded-3xl border border-white/5 shadow-sm min-h-[140px] flex flex-col justify-center relative overflow-hidden">
+                    <div class="text-center flex flex-col items-center">
+                        <h3 class="text-gray-400 text-[10px] font-bold uppercase mb-2">Niveau</h3>
+                        <span class="text-2xl font-black text-primary">LVL 4</span>
+                        <p class="text-[9px] text-gray-400 font-medium mt-1">Intermédiaire</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Date Strip -->
+            <div
+                class="flex justify-between items-center bg-white dark:bg-surface-dark p-3 rounded-2xl border border-slate-200 dark:border-white/5 shadow-sm">
+                <button class="flex items-center gap-1 text-gray-400 text-xs font-medium">
+                    <span class="material-symbols-outlined text-sm">chevron_left</span>
+                </button>
+                <div class="flex items-center gap-4">
+                    <span class="text-gray-400 text-[10px] font-bold uppercase">Lun 20</span>
+                    <span class="text-gray-400 text-[10px] font-bold uppercase">Mar 21</span>
+                    <span
+                        class="bg-primary text-black px-2 py-1 rounded-lg text-[10px] font-black uppercase shadow-neon">Mer
+                        22</span>
+                    <span class="text-gray-400 text-[10px] font-bold uppercase">Jeu 23</span>
+                    <span class="text-gray-400 text-[10px] font-bold uppercase">Ven 24</span>
+                </div>
+                <button class="flex items-center gap-1 text-gray-400 text-xs font-medium">
+                    <span class="material-symbols-outlined text-sm">chevron_right</span>
+                </button>
+            </div>
+
+            <!-- Sleep Graph (Bar Chart) -->
+            <div class="bg-white dark:bg-surface-dark p-5 rounded-3xl border border-white/5 shadow-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-slate-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Sommeil
+                        (7j)</h3>
+                    <span class="text-slate-900 dark:text-white font-bold text-sm">7h 45m <span
+                            class="text-gray-500 text-xs font-normal">moy.</span></span>
+                </div>
+                <div class="flex items-end justify-between h-24 gap-2">
+                    <!-- Bars -->
+                    <div class="w-full bg-primary/20 rounded-t-lg relative group h-[60%]">
+                        <div
+                            class="absolute bottom-0 w-full bg-primary rounded-t-lg h-full opacity-50 group-hover:opacity-100 transition-opacity">
+                        </div>
+                    </div>
+                    <div class="w-full bg-primary/20 rounded-t-lg relative group h-[75%]">
+                        <div
+                            class="absolute bottom-0 w-full bg-primary rounded-t-lg h-full opacity-60 group-hover:opacity-100 transition-opacity">
+                        </div>
+                    </div>
+                    <div class="w-full bg-primary/20 rounded-t-lg relative group h-[40%]">
+                        <div
+                            class="absolute bottom-0 w-full bg-red-400 rounded-t-lg h-full opacity-80 group-hover:opacity-100 transition-opacity">
+                        </div>
+                    </div> <!-- Bad night -->
+                    <div class="w-full bg-primary/20 rounded-t-lg relative group h-[85%]">
+                        <div
+                            class="absolute bottom-0 w-full bg-primary rounded-t-lg h-full opacity-80 group-hover:opacity-100 transition-opacity">
+                        </div>
+                    </div>
+                    <div class="w-full bg-primary/20 rounded-t-lg relative group h-[90%]">
+                        <div
+                            class="absolute bottom-0 w-full bg-primary rounded-t-lg h-full opacity-90 group-hover:opacity-100 transition-opacity">
+                        </div>
+                    </div>
+                    <div class="w-full bg-primary/20 rounded-t-lg relative group h-[80%]">
+                        <div
+                            class="absolute bottom-0 w-full bg-primary rounded-t-lg h-full opacity-70 group-hover:opacity-100 transition-opacity">
+                        </div>
+                    </div>
+                    <div
+                        class="w-full bg-primary/20 rounded-t-lg relative group h-[95%] shadow-[0_0_10px_rgba(73,230,25,0.4)]">
+                        <div class="absolute bottom-0 w-full bg-primary rounded-t-lg h-full"></div>
+                    </div>
+                </div>
+                <div class="flex justify-between text-[10px] text-gray-500 mt-2 font-mono uppercase">
+                    <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="grid grid-cols-2 gap-3 pb-4">
+                <!-- User Buttons -->
+                <button onclick="window.location.href='/body-map.html'"
+                    class="bg-surface-light dark:bg-surface-dark p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-gray-100 dark:hover:bg-[#253620] transition-colors border border-slate-200 dark:border-white/5">
+                    <div class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500">
+                        <span class="material-symbols-outlined">accessibility_new</span>
+                    </div>
+                    <span class="text-sm font-semibold text-slate-800 dark:text-white">Anatomie</span>
+                </button>
+
+                <button onclick="window.location.href='/videos.html'"
+                    class="bg-surface-light dark:bg-surface-dark p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-gray-100 dark:hover:bg-[#253620] transition-colors border border-slate-200 dark:border-white/5">
+                    <div
+                        class="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500">
+                        <span class="material-symbols-outlined">menu_book</span>
+                    </div>
+                    <span class="text-sm font-semibold text-slate-800 dark:text-white">Ressources</span>
+                </button>
+
+                <!-- Dynamic Today's Workout Container -->
+                <div id="today-workout-card" class="col-span-2 hidden">
+                    <!-- Injected by JS -->
+                </div>
+
+                <!-- Fallback Button (if no program) -->
+                <button id="fallback-program-btn" onclick="window.location.href='/questionnaire.html?step=1'"
+                    class="col-span-2 bg-primary p-4 rounded-2xl flex flex-row items-center justify-center gap-3 text-black shadow-neon hover:shadow-neon-strong transition-all active:scale-[0.98]">
+                    <span class="material-symbols-outlined font-bold">add</span>
+                    <span class="text-base font-bold">Créer mon Programme</span>
+                </button>
+            </div>
+
+        </main>
+
+        <nav
+            class="absolute bottom-0 left-0 w-full z-50 bg-[#f6f8f6]/95 dark:bg-[#131811]/95 backdrop-blur-lg border-t border-slate-200 dark:border-[#2c3829] pb-6 pt-2">
+            <div class="flex justify-around items-center px-2">
+                <a href="dashboard.html" class="flex flex-col items-center justify-center gap-1 min-w-[64px] group">
+                    <span class="material-symbols-outlined text-[28px] text-primary">analytics</span>
+                    <span class="text-[10px] font-medium text-primary">Tableau</span>
+                </a>
+
+                <a href="my-program-pro.html"
+                    onclick="this.href='/my-program-pro.html?id=' + (localStorage.getItem('lastProgramId') || '')"
+                    class="flex flex-col items-center justify-center gap-1 min-w-[64px] group opacity-60 hover:opacity-100 transition-opacity">
+                    <span
+                        class="material-symbols-outlined text-[28px] text-slate-800 dark:text-white">calendar_today</span>
+                    <span class="text-[10px] font-medium text-slate-800 dark:text-white">Programme</span>
+                </a>
+                <a href="videos.html"
+                    class="flex flex-col items-center justify-center gap-1 min-w-[64px] group opacity-60 hover:opacity-100 transition-opacity">
+                    <span
+                        class="material-symbols-outlined text-[28px] text-slate-800 dark:text-white">video_library</span>
+                    <span class="text-[10px] font-medium text-slate-800 dark:text-white">Vidéos</span>
+                </a>
+
+                <a href="subscription.html"
+                    class="flex flex-col items-center justify-center gap-1 min-w-[64px] group opacity-60 hover:opacity-100 transition-opacity">
+                    <span class="material-symbols-outlined text-[28px] text-slate-800 dark:text-white">stars</span>
+                    <span class="text-[10px] font-medium text-slate-800 dark:text-white">Premium</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load Program from Local Storage (Netlify/Serverless flow)
+            const program = WorkoutLogic.loadFromLocal();
+            const btn = document.getElementById('fallback-program-btn');
+            const container = document.getElementById('today-workout-card');
+
+            if (!program) {
+                btn.classList.remove('hidden');
+                container.classList.add('hidden');
+                return;
+            }
+
+            try {
+                if (program && program.schedule && program.schedule.length > 0) {
+                    const today = program.schedule[0];
+
+                    btn.classList.add('hidden');
+                    container.classList.remove('hidden');
+
+                    container.innerHTML = `
+                        <div class="bg-primary p-5 rounded-3xl shadow-neon relative overflow-hidden group cursor-pointer transition-transform active:scale-[0.98]" onclick="window.location.href='/my-program-pro.html?id=${program.id}'">
+                            <div class="absolute top-0 right-0 p-4 opacity-10">
+                                <span class="material-symbols-outlined text-6xl text-black">fitness_center</span>
+                            </div>
+                            
+                            <div class="relative z-10">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="bg-black/20 text-black text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider backdrop-blur-sm">Séance du Jour</span>
+                                    <span class="material-symbols-outlined text-black">play_circle</span>
+                                </div>
+                                
+                                <h3 class="text-black text-xl font-extrabold leading-tight mb-1">${today.activity}</h3>
+                                <p class="text-black/70 text-sm font-medium line-clamp-1">${today.details}</p>
+                                
+                                <div class="mt-4 flex items-center gap-3">
+                                    <div class="flex items-center gap-1 bg-black/10 px-2 py-1 rounded-lg">
+                                        <span class="material-symbols-outlined text-[16px] text-black">schedule</span>
+                                        <span class="text-xs font-bold text-black">45 min</span>
+                                    </div>
+                                    <div class="flex items-center gap-1 bg-black/10 px-2 py-1 rounded-lg">
+                                        <span class="material-symbols-outlined text-[16px] text-black">local_fire_department</span>
+                                        <span class="text-xs font-bold text-black">Intense</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                console.error('Err displaying program', e);
+                btn.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

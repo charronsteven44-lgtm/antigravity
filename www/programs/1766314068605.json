@@ -1,0 +1,35 @@
+{
+  "title": "Programme Volume & Force (Progressif)",
+  "schedule": [
+    {
+      "day": "Lundi",
+      "activity": "Séance : Corps Entier (45min)"
+    },
+    {
+      "day": "Mardi",
+      "activity": "Repos / Marche active"
+    },
+    {
+      "day": "Mercredi",
+      "activity": "Séance : Corps Entier (45min)"
+    },
+    {
+      "day": "Jeudi",
+      "activity": "Repos / Marche active"
+    },
+    {
+      "day": "Vendredi",
+      "activity": "Séance : Corps Entier (45min)"
+    },
+    {
+      "day": "Samedi",
+      "activity": "Repos / Marche active"
+    },
+    {
+      "day": "Dimanche",
+      "activity": "Repos / Marche active"
+    }
+  ],
+  "details": "\n        <h3>🏃 Programme Volume & Force (Progressif)</h3>\n        <p>Objectif: muscle | Niveau: intermediaire_regulier</p>\n        <ul>\n            <li><strong>Lundi:</strong> Séance : Corps Entier (45min)</li><li><strong>Mardi:</strong> Repos / Marche active</li><li><strong>Mercredi:</strong> Séance : Corps Entier (45min)</li><li><strong>Jeudi:</strong> Repos / Marche active</li><li><strong>Vendredi:</strong> Séance : Corps Entier (45min)</li><li><strong>Samedi:</strong> Repos / Marche active</li><li><strong>Dimanche:</strong> Repos / Marche active</li>\n        </ul>\n        <p><em>Astuce: \"Pense à boire de l'eau avant et après chaque séance !\"</em></p>\n    ",
+  "id": "1766314068605"
+}

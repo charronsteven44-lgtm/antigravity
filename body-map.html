@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html class="dark" lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Carte Interactive - ESSOR ACTIVE</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#49e619",
+                        "primary-dark": "#36b012",
+                        "background-dark": "#151515",
+                        "surface-dark": "#1E201E", // Slightly lighter black/green
+                        "card-dark": "#0f140f",
+                        "highlight": "#2a3626"
+                    },
+                    fontFamily: { "display": ["Manrope", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "1.5rem", "2xl": "2rem", "3xl": "2.5rem" }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #000;
+        }
+
+        /* Hide scrollbar */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="text-white font-display overflow-hidden flex flex-col h-screen relative">
+
+    <!-- Top Bar -->
+    <header
+        class="flex items-center justify-between px-4 pt-6 pb-2 z-10 bg-gradient-to-b from-black/80 to-transparent absolute top-0 w-full">
+        <button onclick="window.location.href='dashboard.html'" class="p-2 text-white">
+            <span class="material-symbols-outlined text-3xl">menu</span>
+        </button>
+        <h1 class="text-lg font-bold">Carte Interactive</h1>
+        <button class="p-2 text-white">
+            <span class="material-symbols-outlined text-3xl">settings</span>
+        </button>
+    </header>
+
+    <!-- Toggle Switch -->
+    <div class="absolute top-20 left-0 w-full flex justify-center z-10">
+        <div class="bg-gray-800/80 backdrop-blur-md rounded-full p-1 flex">
+            <button class="px-6 py-1.5 bg-primary text-black font-bold rounded-full text-sm shadow-lg">Muscles</button>
+            <button class="px-6 py-1.5 text-gray-400 font-medium rounded-full text-sm">Squelette</button>
+        </div>
+    </div>
+
+    <!-- 3D Map Placeholder (Background) -->
+    <div class="absolute inset-0 z-0 flex items-center justify-center bg-[#101210]">
+        <!-- Simulated Model -->
+        <div class="relative w-[300px] h-[500px] opacity-60">
+            <img src="https://images.unsplash.com/photo-1510565866160-c3d3869269d0?q=80&w=1000&auto=format&fit=crop"
+                class="w-full h-full object-contain grayscale mix-blend-screen" alt="Human Anatomy">
+        </div>
+
+        <!-- Interactive Points -->
+        <button onclick="openSheet()"
+            class="absolute top-[35%] left-[55%] translate-x-1/2 w-8 h-8 flex items-center justify-center">
+            <div class="w-4 h-4 bg-primary rounded-full animate-ping absolute"></div>
+            <div class="w-4 h-4 bg-primary rounded-full border-2 border-white relative z-10"></div>
+        </button>
+    </div>
+
+    <!-- Detail Sheet -->
+    <div id="detail-sheet"
+        class="absolute bottom-0 left-0 w-full bg-[#131613] rounded-t-[3rem] shadow-[0_-10px_40px_rgba(0,0,0,0.8)] z-20 transform transition-transform duration-500 h-[85vh] flex flex-col">
+
+        <!-- Drag Handle -->
+        <div class="w-full flex justify-center pt-3 pb-1" onclick="closeSheet()">
+            <div class="w-12 h-1.5 bg-gray-600 rounded-full"></div>
+        </div>
+
+        <!-- Sheet Header -->
+        <div class="px-6 pt-4 pb-2 shrink-0">
+            <div class="flex gap-2 mb-2">
+                <span
+                    class="px-2 py-0.5 bg-primary/20 text-primary text-[10px] font-bold uppercase rounded">Muscle</span>
+                <span class="px-2 py-0.5 bg-gray-700 text-gray-300 text-[10px] font-bold uppercase rounded">Torse</span>
+            </div>
+            <div class="flex justify-between items-start">
+                <div>
+                    <h2 class="text-3xl font-bold leading-tight">Grand Pectoral</h2>
+                    <p class="text-gray-500 text-sm">Pectoralis Major</p>
+                </div>
+                <button class="p-2 bg-white/5 rounded-full hover:bg-white/10">
+                    <span class="material-symbols-outlined text-gray-400">favorite</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="px-6 mt-4 border-b border-white/5 shrink-0">
+            <div class="flex gap-6 overflow-x-auto hide-scrollbar pb-3">
+                <button class="text-primary font-bold text-sm border-b-2 border-primary pb-3 px-1">Vue
+                    d'ensemble</button>
+                <button class="text-gray-500 font-medium text-sm pb-3 px-1">Symptômes</button>
+                <button class="text-gray-500 font-medium text-sm pb-3 px-1">Exercices</button>
+                <button class="text-gray-500 font-medium text-sm pb-3 px-1">Tests</button>
+            </div>
+        </div>
+
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto px-6 py-6 hide-scrollbar space-y-6">
+
+            <!-- AI Insight Card -->
+            <div class="bg-[#0f140f] border border-[#1f2e1a] rounded-3xl p-5 relative overflow-hidden">
+                <div class="flex gap-4">
+                    <div
+                        class="w-10 h-10 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(73,230,25,0.4)]">
+                        <span class="material-symbols-outlined text-black">smart_toy</span>
+                    </div>
+                    <div>
+                        <p class="text-primary text-xs font-bold uppercase mb-1">Coach AI Insight</p>
+                        <p class="text-gray-200 text-sm leading-relaxed mb-3">
+                            D'après ta séance "Push Day" d'hier, cette tension est probablement une courbature saine
+                            (DOMS). <br>
+                            <span class="font-bold text-white">Recommandation :</span> Étirement léger et hydratation.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Videos Carousel -->
+            <div class="flex gap-4 overflow-x-auto hide-scrollbar -mx-6 px-6">
+                <!-- Video 1 -->
+                <div class="w-64 h-36 bg-gray-800 rounded-2xl relative overflow-hidden shrink-0 group">
+                    <img src="https://images.unsplash.com/photo-1566241142559-40e1dab266c6?q=80&w=1470&auto=format&fit=crop"
+                        class="w-full h-full object-cover opacity-60">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-10 h-10 bg-primary/90 rounded-full flex items-center justify-center shadow-lg">
+                            <span class="material-symbols-outlined text-black">play_arrow</span>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-0 left-0 w-full p-3 bg-gradient-to-t from-black/90 to-transparent">
+                        <p class="text-primary text-[10px] font-bold uppercase mb-0.5">Étirement</p>
+                        <p class="text-white text-sm font-bold leading-tight">Ouverture Pectorale au Mur</p>
+                    </div>
+                </div>
+                <!-- Video 2 -->
+                <div class="w-32 h-36 bg-gray-800 rounded-2xl relative overflow-hidden shrink-0 group">
+                    <img src="https://images.unsplash.com/photo-1518310383802-640c2de311b2?q=80&w=1470&auto=format&fit=crop"
+                        class="w-full h-full object-cover opacity-60">
+                    <div class="absolute bottom-0 left-0 w-full p-3 bg-gradient-to-t from-black/90 to-transparent">
+                        <p class="text-primary text-[10px] font-bold uppercase mb-0.5">Auto-massage</p>
+                        <p class="text-white text-sm font-bold leading-tight">Rouleau</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Anatomy Section -->
+            <div>
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="material-symbols-outlined text-primary">info</span>
+                    <h3 class="text-lg font-bold text-white">Anatomie</h3>
+                </div>
+                <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                    Le grand pectoral est un muscle épais, en forme d'éventail, situé sur la partie antérieure du
+                    thorax. Il est responsable de l'adduction, de la rotation interne et de la flexion de l'humérus.
+                </p>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-[#1a1d1a] p-4 rounded-2xl">
+                        <p class="text-xs text-gray-500 uppercase font-bold mb-1">Origine</p>
+                        <p class="text-sm text-gray-200">Clavicule, Sternum, Côtes</p>
+                    </div>
+                    <div class="bg-[#1a1d1a] p-4 rounded-2xl">
+                        <p class="text-xs text-gray-500 uppercase font-bold mb-1">Insertion</p>
+                        <p class="text-sm text-gray-200">Humérus (Sillon bicipital)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="h-12 w-full"></div> <!-- Spacer -->
+        </div>
+    </div>
+
+    <script>
+        // Start open for demo
+        setTimeout(() => {
+            // document.getElementById('detail-sheet').style.transform = 'translateY(0)';
+        }, 500);
+
+        function openSheet() {
+            document.getElementById('detail-sheet').style.transform = 'translateY(0)';
+        }
+
+        function closeSheet() {
+            document.getElementById('detail-sheet').style.transform = 'translateY(85%)';
+        }
+
+        // Initial state: partially visible or hidden? 
+        // Let's make it look like the user just clicked: fully open.
+        // Actually, for "Ou est ceci?", let's show it by default or make it easy to see.
+    </script>
+</body>
+
+</html>

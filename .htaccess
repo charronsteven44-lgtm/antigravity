@@ -1,0 +1,32 @@
+RewriteEngine On
+
+# 1. Rediriger /questionnaire vers questionnaire.html
+RewriteRule ^questionnaire$ questionnaire.html [L]
+
+# 2. Rediriger /bilan vers questionnaire.html (alias marketing)
+RewriteRule ^bilan$ questionnaire.html [L]
+
+# 3. Rediriger /dashboard vers dashboard.html
+RewriteRule ^dashboard$ dashboard.html [L]
+
+# 4. Rediriger /admin vers admin.html (plus pro)
+RewriteRule ^admin$ admin.html [L]
+
+# 5. Rediriger /abonnement vers subscription.html
+RewriteRule ^abonnement$ subscription.html [L]
+
+# 6. ROUTAGE API : Rediriger /api/send-program vers api/send-program.php
+RewriteRule ^api/send-program$ api/send-program.php [L]
+
+# 7. ROUTAGE API : Rediriger /api/admin-login vers api/admin-login.php (à créer si besoin)
+RewriteRule ^api/admin-login$ api/admin-login.php [L]
+
+# 4. Suppression de l'extension .html des URLs (optionnel mais propre)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+)$ $1.html [L]
+
+# 5. Forcer le HTTPS (recommandé sur IONOS)
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]

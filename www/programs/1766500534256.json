@@ -1,0 +1,37 @@
+{
+  "title": "Programme Mobilité / santé",
+  "schedule": [
+    {
+      "day": "Lundi",
+      "activity": "Séance : Corps Entier (45min)"
+    },
+    {
+      "day": "Mardi",
+      "activity": "Repos / Marche active"
+    },
+    {
+      "day": "Mercredi",
+      "activity": "Séance : Corps Entier (45min)"
+    },
+    {
+      "day": "Jeudi",
+      "activity": "Séance : Cardio ou HIIT (30min)"
+    },
+    {
+      "day": "Vendredi",
+      "activity": "Séance : Corps Entier (45min)"
+    },
+    {
+      "day": "Samedi",
+      "activity": "Séance : Haut du corps focus"
+    },
+    {
+      "day": "Dimanche",
+      "activity": "Repos / Marche active"
+    }
+  ],
+  "details": "\n        <h3>🏃 Programme Remise en Forme (Progressif)</h3>\n        <p>Objectif: Mobilité / santé | Niveau: Avancé</p>\n        <ul>\n            <li><strong>Lundi:</strong> Séance : Corps Entier (45min)</li><li><strong>Mardi:</strong> Repos / Marche active</li><li><strong>Mercredi:</strong> Séance : Corps Entier (45min)</li><li><strong>Jeudi:</strong> Séance : Cardio ou HIIT (30min)</li><li><strong>Vendredi:</strong> Séance : Corps Entier (45min)</li><li><strong>Samedi:</strong> Séance : Haut du corps focus</li><li><strong>Dimanche:</strong> Repos / Marche active</li>\n        </ul>\n        <p><em>Astuce: \"Pense à boire de l'eau avant et après chaque séance !\"</em></p>\n    ",
+  "id": "1766500534256",
+  "isPremium": false,
+  "created": 1766500534256
+}

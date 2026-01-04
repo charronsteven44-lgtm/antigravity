@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votre Programme ESSOR ACTIVE</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background-color: #0a0f08;
+            color: #ffffff;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: linear-gradient(180deg, #1a2617 0%, #0a0f08 100%);
+        }
+
+        .header {
+            background: #152111;
+            padding: 40px 30px;
+            text-align: center;
+            border-bottom: 3px solid #49e619;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: 900;
+            color: #49e619;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        .tagline {
+            color: #a0a0a0;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .greeting {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #d0d0d0;
+            margin-bottom: 30px;
+        }
+
+        .highlight {
+            color: #49e619;
+            font-weight: bold;
+        }
+
+        .cta-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #49e619;
+            color: #0a0f08;
+            text-decoration: none;
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 20px rgba(73, 230, 25, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background: #3cd010;
+            box-shadow: 0 6px 30px rgba(73, 230, 25, 0.6);
+        }
+
+        .features {
+            background: #152111;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            border: 1px solid rgba(73, 230, 25, 0.2);
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .feature-icon {
+            width: 30px;
+            height: 30px;
+            background: #49e619;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #0a0f08;
+        }
+
+        .feature-text {
+            color: #ffffff;
+            font-size: 15px;
+        }
+
+        .footer {
+            background: #0a0f08;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #2a3626;
+        }
+
+        .footer-text {
+            color: #6b6b6b;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .social-links {
+            margin: 20px 0;
+        }
+
+        .social-link {
+            display: inline-block;
+            margin: 0 10px;
+            color: #49e619;
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="logo">ESSOR ACTIVE</h1>
+            <p class="tagline">Performance • Transformation • Résultats</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <h2 class="greeting">Bonjour {{name}},</h2>
+
+            <div class="message">
+                <p>Félicitations ! Vous venez de franchir la <span class="highlight">première étape vers votre
+                        transformation</span>.</p>
+
+                <p>Votre programme personnalisé est prêt. Nous avons analysé vos réponses et créé un plan d'entraînement
+                    <span class="highlight">100% adapté à votre profil</span>, vos objectifs et votre disponibilité.</p>
+
+                <p>Ce n'est pas un programme générique. C'est <span class="highlight">VOTRE programme</span>, conçu pour
+                    maximiser vos résultats tout en respectant vos contraintes et votre niveau actuel.</p>
+            </div>
+
+            <!-- Features -->
+            <div class="features">
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">Programme 7 jours structuré et progressif</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">Exercices adaptés à votre niveau et matériel</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">Séances optimisées selon votre temps disponible</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">Prise en compte de vos douleurs et limitations</div>
+                </div>
+            </div>
+
+            <div class="message">
+                <p><strong>Votre succès commence maintenant.</strong> Chaque séance vous rapproche de vos objectifs.
+                    Chaque répétition compte. Chaque effort paie.</p>
+
+                <p>Ne laissez pas cette motivation s'échapper. <span class="highlight">Votre programme vous
+                        attend</span>.</p>
+            </div>
+
+            <!-- CTA Button -->
+            <div class="cta-container">
+                <a href="{{program_link}}" class="cta-button">
+                    Accéder à mon programme 100 % personnalisé
+                </a>
+            </div>
+
+            <div class="message" style="margin-top: 40px; font-size: 14px; color: #a0a0a0;">
+                <p>Besoin d'aide ? Notre équipe est là pour vous accompagner à chaque étape de votre parcours.</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="social-links">
+                <a href="#" class="social-link">Instagram</a>
+                <a href="#" class="social-link">Facebook</a>
+                <a href="#" class="social-link">YouTube</a>
+            </div>
+            <p class="footer-text">
+                ESSOR ACTIVE © 2025 - Tous droits réservés<br>
+                Vous recevez cet email car vous avez complété notre questionnaire.<br>
+                <a href="#" style="color: #49e619;">Se désabonner</a>
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>

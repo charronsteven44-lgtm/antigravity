@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html class="dark" lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Abonnements ESSOR ACTIVE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#49e619", "background-dark": "#0a0f08", "surface-dark": "#152111" },
+                    fontFamily: { "display": ["Manrope", "sans-serif"] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .premium-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .premium-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(73, 230, 25, 0.3);
+            box-shadow: 0 10px 40px -10px rgba(73, 230, 25, 0.2);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 15px rgba(73, 230, 25, 0.5);
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-dark text-white font-display min-h-screen flex flex-col items-center py-12 px-4 scrollbar-hide">
+
+    <!-- Header -->
+    <div class="text-center max-w-2xl mb-12">
+        <h1 class="text-4xl md:text-5xl font-black mb-4 leading-tight">
+            Passez au niveau supérieur avec <span class="text-primary glow-text">ESSOR</span>
+        </h1>
+        <p class="text-gray-400 text-lg">
+            Votre programme 7 jours est gratuit. <br class="hidden md:block">
+            Les abonnements vous permettent d’avoir :
+        </p>
+        <div class="flex flex-wrap justify-center gap-6 mt-6">
+            <div class="flex items-center gap-2"><span
+                    class="material-symbols-outlined text-primary">check_circle</span> <span>Suivi continu</span></div>
+            <div class="flex items-center gap-2"><span
+                    class="material-symbols-outlined text-primary">check_circle</span> <span>Ajustements
+                    intelligents</span></div>
+            <div class="flex items-center gap-2"><span
+                    class="material-symbols-outlined text-primary">check_circle</span> <span>Progression durable</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl">
+
+        <!-- GRATUIT (Free) -->
+        <div class="premium-card bg-surface-dark/40 backdrop-blur-xl p-8 rounded-[2.5rem] flex flex-col">
+            <div class="mb-6">
+                <span class="text-gray-400 font-bold tracking-widest uppercase text-xs">Découverte</span>
+                <h3 class="text-2xl font-black mt-1">GRATUIT</h3>
+                <div class="flex items-baseline gap-1 mt-4">
+                    <span class="text-4xl font-black">0 €</span>
+                    <span class="text-gray-500">/ mois</span>
+                </div>
+                <p class="text-gray-400 text-sm mt-4">Pour commencer votre transformation</p>
+            </div>
+            <ul class="space-y-4 mb-8 flex-1">
+                <li class="flex items-start gap-3 text-sm">
+                    <span class="material-symbols-outlined text-primary text-sm mt-0.5">check</span>
+                    <span>Programme de base 7 jours</span>
+                </li>
+                <li class="flex items-start gap-3 text-sm">
+                    <span class="material-symbols-outlined text-primary text-sm mt-0.5">check</span>
+                    <span>Accès limité aux fonctionnalités</span>
+                </li>
+                <li class="flex items-start gap-3 text-sm">
+                    <span class="material-symbols-outlined text-primary text-sm mt-0.5">check</span>
+                    <span>Exercices essentiels</span>
+                </li>
+            </ul>
+            <button onclick="window.location.href='dashboard.html'"
+                class="w-full bg-white/5 hover:bg-white/10 text-white font-bold py-4 rounded-2xl transition-all">
+                Continuer gratuitement
+            </button>
+        </div>
+
+        <!-- 3€ (Basic) -->
+        <div class="premium-card bg-surface-dark/40 backdrop-blur-xl p-8 rounded-[2.5rem] flex flex-col">
+            <div class="mb-6">
+                <span class="text-primary font-bold tracking-widest uppercase text-xs">Essentiel</span>
+                <h3 class="text-2xl font-black mt-1">ESSOR BASIC</h3>
+                <div class="flex items-baseline gap-1 mt-4">
+                    <span class="text-4xl font-black">3 €</span>
+                    <span class="text-gray-500">/ mois</span>
+                </div>
+                <p class="text-gray-400 text-sm mt-4">Programme personnalisé complet</p>
+            </div>
+            <ul class="space-y-4 mb-8 flex-1">
+                <li class="flex items-start gap-3 text-sm">
+                    <span class="material-symbols-outlined text-primary text-sm mt-0.5">check</span>
+                    <span>Programme personnalisé 7 jours détaillé</span>
+                </li>
+                <li class="flex items-start gap-3 text-sm">
+                    <span class="material-symbols-outlined text-primary text-sm mt-0.5">check</span>
+                    <span>Mises à jour régulières</span>
+                </li>
+                <li class="flex items-start gap-3 text-sm">
+                    <span class="material-symbols-outlined text-primary text-sm mt-0.5">check</span>
+                    <span>Accès au lexique des exercices</span>
+                </li>
+                <li class="flex items-start gap-3 text-sm">
+                    <span class="material-symbols-outlined text-primary text-sm mt-0.5">check</span>
+                    <span>Conseils automatiques</span>
+                </li>
+            </ul>
+            <button
+                class="w-full bg-primary hover:bg-primary-hover text-background-dark font-bold py-4 rounded-2xl shadow-[0_4px_20px_rgba(73,230,25,0.3)] transition-all">
+                Choisir ESSOR BASIC
+            </button>
+        </div>
+
+        <!-- 9€ (Premium) - Featured -->
+        <div
+            class="premium-card bg-primary/5 border-primary/20 backdrop-blur-xl p-8 rounded-[2.5rem] flex flex-col relative overflow-hidden">
+            <div
+                class="absolute top-4 right-4 bg-primary text-background-dark text-[10px] font-black px-3 py-1 rounded-full uppercase">
+                Recommandé
+            </div>
+            <div class="mb-6">
+                <span class="text-primary font-bold tracking-widest uppercase text-xs">Avancé</span>
+                <h3 class="text-2xl font-black mt-1">ESSOR PREMIUM</h3>
+                <div class="flex items-baseline gap-1 mt-4">
+                    <span class="text-4xl font-black">9 €</span>
+                    <span class="text-gray-500">/ mois</span>
+                </div>
+                <p class="text-gray-400 text-sm mt-4">Programme avancé avec suivi complet</p>
+            </div>
+            <ul class="space-y-4 mb-8 flex-1 text-gray-200">
+                <li class="flex items-start gap-3 text-sm">
+                    <span class="material-symbols-outlined text-primary text-sm mt-0.5">add</span>
+                    <span class="font-bold text-primary">Tout le contenu ESSOR BASIC</span>
+                </li>
+                <li class="flex items-start gap-3 text-sm">
+                    <span class="material-symbols-outlined text-primary text-sm mt-0.5">check</span>
+                    <span>Suivi évolutif personnalisé</span>
+                </li>
+                <li class="flex items-start gap-3 text-sm">
+                    <span class="material-symbols-outlined text-primary text-sm mt-0.5">check</span>
+                    <span>Nutrition et plans alimentaires</span>
+                </li>
+                <li class="flex items-start gap-3 text-sm">
+                    <span class="material-symbols-outlined text-primary text-sm mt-0.5">check</span>
+                    <span>Accès prioritaire aux nouvelles fonctionnalités</span>
+                </li>
+                <li class="flex items-start gap-3 text-sm">
+                    <span class="material-symbols-outlined text-primary text-sm mt-0.5">check</span>
+                    <span>Vidéos explicatives complètes</span>
+                </li>
+                <li class="flex items-start gap-3 text-sm">
+                    <span class="material-symbols-outlined text-primary text-sm mt-0.5">check</span>
+                    <span>Support prioritaire</span>
+                </li>
+            </ul>
+            <button
+                class="w-full bg-primary hover:bg-primary-hover text-background-dark font-black py-4 rounded-2xl shadow-[0_4px_20px_rgba(73,230,25,0.3)] transition-all">
+                Choisir ESSOR PREMIUM
+            </button>
+        </div>
+    </div>
+
+    <!-- Free Option -->
+    <div class="mt-20 text-center max-w-lg p-10 border border-white/5 rounded-[2.5rem] bg-white/[0.02]">
+        <h4 class="text-xl font-bold mb-4">Ou continuer gratuitement</h4>
+        <ul class="text-gray-400 text-sm space-y-2 mb-8 inline-block text-left">
+            <li class="flex items-center gap-2"><span
+                    class="material-symbols-outlined text-primary text-lg">check</span> Accès au programme automatique
+                de 7 jours</li>
+            <li class="flex items-center gap-2"><span
+                    class="material-symbols-outlined text-primary text-lg">check</span> Sans engagement</li>
+            <li class="flex items-center gap-2"><span
+                    class="material-symbols-outlined text-primary text-lg">check</span> Possibilité de passer à un
+                abonnement à tout moment</li>
+        </ul>
+        <br>
+        <button onclick="window.location.href='dashboard.html'"
+            class="w-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white font-bold py-4 rounded-2xl transition-all">
+            Continuer gratuitement
+        </button>
+    </div>
+
+    <footer class="mt-24 text-gray-600 text-[10px] uppercase tracking-[0.2em]">
+        ESSOR ACTIVE © 2025 - TOUS DROITS RÉSERVÉS
+    </footer>
+
+</body>
+
+</html>

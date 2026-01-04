@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html class="dark" lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Ressources - ESSOR ACTIVE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#49e619", "primary-dark": "#36b012", "background-dark": "#152111", "surface-dark": "#1E291B", "surface-light": "#ffffff" },
+                    fontFamily: { "display": ["Manrope", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "1.5rem", "2xl": "2.5rem" }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        body {
+            min-height: 100vh;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-active {
+            background-color: #49e619;
+            color: black;
+            font-weight: 700;
+        }
+
+        .tab-inactive {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #9ca3af;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-black font-display flex items-center justify-center min-h-screen p-0 sm:p-4">
+    <div
+        class="relative flex flex-col h-[100dvh] w-full max-w-md bg-[#f6f8f6] dark:bg-background-dark sm:rounded-[3rem] shadow-2xl overflow-hidden ring-8 ring-black/5 dark:ring-white/5">
+
+        <!-- Header -->
+        <header
+            class="flex items-center justify-between px-6 pt-6 pb-2 z-20 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md sticky top-0">
+            <button onclick="window.location.href='dashboard.html'"
+                class="p-2 -ml-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-slate-800 dark:text-white transition-colors">
+                <span class="material-symbols-outlined text-3xl">arrow_back</span>
+            </button>
+            <h1 class="text-xl font-bold text-slate-800 dark:text-white">Ressources</h1>
+            <button class="p-2 -mr-2 text-slate-800 dark:text-white">
+                <span class="material-symbols-outlined text-3xl">search</span>
+            </button>
+        </header>
+
+        <!-- Main Tabs -->
+        <div class="px-6 mt-2 mb-4 shrink-0">
+            <div class="grid grid-cols-2 p-1 bg-gray-200 dark:bg-white/5 rounded-full">
+                <button onclick="switchTab('videos')" id="tab-videos"
+                    class="py-2.5 rounded-full text-sm tab-active transition-all">Vidéothèque</button>
+                <button onclick="switchTab('lexique')" id="tab-lexique"
+                    class="py-2.5 rounded-full text-sm tab-inactive hover:bg-white/10 transition-all">Lexique</button>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <main class="flex-1 overflow-y-auto px-6 py-2 pb-24" id="content-area">
+
+            <!-- SECTION VIDEOS -->
+            <div id="view-videos" class="space-y-6">
+                <!-- Categories -->
+                <div class="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
+                    <button
+                        class="px-5 py-2 rounded-full border border-primary text-primary font-bold text-sm whitespace-nowrap bg-primary/10">Tout</button>
+                    <button
+                        class="px-5 py-2 rounded-full border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-300 font-bold text-sm whitespace-nowrap">Musculation</button>
+                    <button
+                        class="px-5 py-2 rounded-full border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-300 font-bold text-sm whitespace-nowrap">Mobilité</button>
+                    <button
+                        class="px-5 py-2 rounded-full border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-300 font-bold text-sm whitespace-nowrap">Yoga</button>
+                </div>
+
+                <!-- Featured Video -->
+                <div class="relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl group cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1552674605-469527217b3d?q=80&w=1349&auto=format&fit=crop"
+                        class="w-full h-full object-cover transition-transform group-hover:scale-110">
+                    <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
+                        <div
+                            class="w-14 h-14 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/40 group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-white text-3xl">play_arrow</span>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
+                        <span
+                            class="bg-primary text-black text-[10px] font-bold px-2 py-1 rounded uppercase mb-1 inline-block">Yoga</span>
+                        <h3 class="text-white font-bold text-lg leading-tight">Salutation au Soleil</h3>
+                    </div>
+                </div>
+
+                <!-- Vertical List -->
+                <div class="space-y-4">
+                    <h3 class="font-bold text-lg dark:text-white">Derniers ajouts</h3>
+
+                    <div
+                        class="flex gap-4 p-3 bg-white dark:bg-surface-dark rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                        <div class="w-20 h-20 rounded-xl bg-gray-200 overflow-hidden shrink-0">
+                            <img src="https://images.unsplash.com/photo-1574680096141-1cddd32e04ca?q=80&w=1374&auto=format&fit=crop"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <span class="text-[10px] text-primary font-bold text-sm uppercase">Mobilité</span>
+                            <h4 class="text-slate-900 dark:text-white font-bold text-sm mb-1">Déverrouillage Hanches
+                            </h4>
+                            <p class="text-gray-400 text-xs">8 min • Essentiel bureau</p>
+                        </div>
+                        <div class="ml-auto flex items-center">
+                            <span class="material-symbols-outlined text-gray-400">play_circle</span>
+                        </div>
+                    </div>
+
+                    <div
+                        class="flex gap-4 p-3 bg-white dark:bg-surface-dark rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                        <div class="w-20 h-20 rounded-xl bg-gray-200 overflow-hidden shrink-0">
+                            <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=1470&auto=format&fit=crop"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <span class="text-[10px] text-orange-400 font-bold text-sm uppercase">Musculation</span>
+                            <h4 class="text-slate-900 dark:text-white font-bold text-sm mb-1">Technique Deadlift</h4>
+                            <p class="text-gray-400 text-xs">Guide complet</p>
+                        </div>
+                        <div class="ml-auto flex items-center">
+                            <span class="material-symbols-outlined text-gray-400">play_circle</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION LEXIQUE (Hidden by default) -->
+            <div id="view-lexique" class="space-y-4 hidden">
+                <div class="relative">
+                    <span
+                        class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 material-symbols-outlined">search</span>
+                    <input type="text" placeholder="Rechercher un terme..."
+                        class="w-full pl-10 pr-4 py-3 rounded-xl border-none ring-1 ring-gray-200 dark:ring-white/10 bg-white dark:bg-surface-dark text-slate-900 dark:text-white focus:ring-primary ">
+                </div>
+
+                <div class="space-y-3">
+                    <!-- Term 1 -->
+                    <div
+                        class="p-4 bg-white dark:bg-surface-dark rounded-2xl border border-gray-100 dark:border-white/5">
+                        <h4 class="text-primary font-bold text-base mb-1">Hypertrophie</h4>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                            Augmentation du volume musculaire due à l'entraînement en résistance. Se produit via la
+                            réparation des micro-dommages.
+                        </p>
+                    </div>
+                    <!-- Term 2 -->
+                    <div
+                        class="p-4 bg-white dark:bg-surface-dark rounded-2xl border border-gray-100 dark:border-white/5">
+                        <h4 class="text-primary font-bold text-base mb-1">Pliométrie</h4>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                            Exercices basés sur des sauts et des mouvements explosifs pour améliorer la puissance et la
+                            réactivité.
+                        </p>
+                    </div>
+                    <!-- Term 3 -->
+                    <div
+                        class="p-4 bg-white dark:bg-surface-dark rounded-2xl border border-gray-100 dark:border-white/5">
+                        <h4 class="text-primary font-bold text-base mb-1">Superset</h4>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                            Enchaînement de deux exercices sans temps de repos entre les deux, souvent pour des muscles
+                            antagonistes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Bottom Navigation Bar (Consistent) -->
+        <nav
+            class="absolute bottom-0 left-0 w-full z-50 bg-[#f6f8f6]/95 dark:bg-[#131811]/95 backdrop-blur-lg border-t border-slate-200 dark:border-[#2c3829] pb-6 pt-2">
+            <div class="flex justify-around items-center px-2">
+                <a href="dashboard.html"
+                    class="flex flex-col items-center justify-center gap-1 min-w-[64px] group opacity-60 hover:opacity-100 transition-opacity">
+                    <span class="material-symbols-outlined text-[28px] text-slate-800 dark:text-white">analytics</span>
+                    <span class="text-[10px] font-medium text-slate-800 dark:text-white">Tableau</span>
+                </a>
+                <a href="my-program-pro.html"
+                    onclick="this.href='/my-program-pro.html?id=' + (localStorage.getItem('lastProgramId') || '')"
+                    class="flex flex-col items-center justify-center gap-1 min-w-[64px] group opacity-60 hover:opacity-100 transition-opacity">
+                    <span
+                        class="material-symbols-outlined text-[28px] text-slate-800 dark:text-white">calendar_today</span>
+                    <span class="text-[10px] font-medium text-slate-800 dark:text-white">Programme</span>
+                </a>
+                <a href="subscription.html"
+                    class="flex flex-col items-center justify-center gap-1 min-w-[64px] group opacity-60 hover:opacity-100 transition-opacity">
+                    <span class="material-symbols-outlined text-[28px] text-slate-800 dark:text-white">stars</span>
+                    <span class="text-[10px] font-medium text-slate-800 dark:text-white">Premium</span>
+                </a>
+                <a href="videos.html" class="flex flex-col items-center justify-center gap-1 min-w-[64px] group">
+                    <span class="material-symbols-outlined text-[28px] text-primary">video_library</span>
+                    <span class="text-[10px] font-medium text-primary">Vidéos</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            const vVideos = document.getElementById('view-videos');
+            const vLexique = document.getElementById('view-lexique');
+            const tVideos = document.getElementById('tab-videos');
+            const tLexique = document.getElementById('tab-lexique');
+
+            if (tab === 'videos') {
+                vVideos.classList.remove('hidden');
+                vLexique.classList.add('hidden');
+                tVideos.className = 'py-2.5 rounded-full text-sm tab-active transition-all shadow-md';
+                tLexique.className = 'py-2.5 rounded-full text-sm tab-inactive hover:bg-white/10 transition-all';
+            } else {
+                vVideos.classList.add('hidden');
+                vLexique.classList.remove('hidden');
+                tVideos.className = 'py-2.5 rounded-full text-sm tab-inactive hover:bg-white/10 transition-all';
+                tLexique.className = 'py-2.5 rounded-full text-sm tab-active transition-all shadow-md';
+            }
+        }
+        // Initialize
+        switchTab('videos');
+    </script>
+</body>
+
+</html>
