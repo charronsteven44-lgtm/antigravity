@@ -146,11 +146,10 @@
 
             if (programId) {
                 try {
-                    // Try fetching from Render API
-                    const API_URL = `https://essor-api.onrender.com/api/get-program?id=${programId}`;
-                    const res = await fetch(API_URL);
-                    if (res.ok) {
-                        program = await res.json();
+                    // Try fetching from local API
+                    const response = await fetch(`/api/get-program?id=${programId}`);
+                    if (response.ok) {
+                        program = await response.json();
                         // Save for offline use
                         WorkoutLogic.saveToLocal(program);
                     }
