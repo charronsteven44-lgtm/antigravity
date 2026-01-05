@@ -83,6 +83,19 @@ function generateEmailHTML(userData, program, link) {
     return template;
 }
 
+// --- PROGRAM STORAGE ---
+function saveProgram(program) {
+    const programsDir = path.join(__dirname, 'programs');
+    if (!fs.existsSync(programsDir)) fs.mkdirSync(programsDir);
+
+    // Générer un ID court et unique
+    const id = Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+    const filePath = path.join(programsDir, `${id}.json`);
+
+    fs.writeFileSync(filePath, JSON.stringify(program, null, 2));
+    return id;
+}
+
 async function handleEmailRequest(req, res) {
     try {
         const data = await parsePostBody(req);
