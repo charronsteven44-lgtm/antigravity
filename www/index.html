@@ -46,11 +46,14 @@
     <script>
         // REDIRECTION LOGIC
         document.addEventListener('DOMContentLoaded', () => {
+            const isClientLoggedIn = localStorage.getItem('isClientLoggedIn');
             const lastProgramId = localStorage.getItem('lastProgramId');
             const userProgram = localStorage.getItem('userProgram');
 
-            if (lastProgramId || userProgram) {
-                window.location.href = 'dashboard.html';
+            if (isClientLoggedIn === 'true') {
+                window.location.href = 'client-dashboard.html';
+            } else if (lastProgramId || userProgram) {
+                window.location.href = 'client-dashboard.html';
             } else {
                 document.getElementById('loading-overlay').style.display = 'none';
             }

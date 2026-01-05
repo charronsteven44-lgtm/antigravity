@@ -50,117 +50,51 @@ function parsePostBody(req) {
     });
 }
 
-// --- WORKOUT GENERATOR ---
-function generateWorkout(data) {
-    const goal = data.responses[5] || 'forme';
-    const level = data.responses[4] || 'débutant';
-    const frequencyStr = data.responses[7] || '3x / semaine';
+const ProgramSelector = require('./js/program-selector');
 
-    let frequency = 3;
-    if (frequencyStr.includes('2x')) frequency = 2;
-    if (frequencyStr.includes('4x')) frequency = 4;
-    if (frequencyStr.includes('Tous les jours')) frequency = 7;
+// --- EMAIL GENERATOR ---
+function generateEmailHTML(userData, program, link) {
+    let template = fs.readFileSync(path.join(__dirname, 'email-template.html'), 'utf8');
 
-    let title = "Programme ESSOR - ";
-    if (goal.includes('poids')) title += "Perte de Poids";
-    else if (goal.includes('muscle')) title += "Prise de Muscle";
-    else if (goal.includes('douleurs')) title += "Mobilité & Santé";
-    else if (goal.includes('Performance')) title += "Performance Athlétique";
-    else title += "Remise en Forme";
+    // Construction du tableau de planning
+    const scheduleRows = program.schedule.map(s => `
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; color: #49e619; font-weight: bold; width: 100px;">${s.day}</td>
+            <td style="padding: 12px; color: #ffffff;">${s.activity}</td>
+            <td style="padding: 12px; color: #888; text-align: right;">${s.duration}</td>
+        </tr>
+    `).join('');
 
-    title += (level.includes('Avancé') ? " (Avancé)" : " (Initial)");
+    const replacements = {
+        '{{name}}': userData.name,
+        '{{program_title}}': program.title,
+        '{{goal}}': program.goal,
+        '{{frequency}}': userData.responses[7] || '3x / semaine',
+        '{{duration}}': userData.responses[6] || '30 min',
+        '{{summary}}': program.summary,
+        '{{schedule_table}}': scheduleRows,
+        '{{program_link}}': link
+    };
 
-    let schedule = [];
-    const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
-
-    for (let i = 0; i < 7; i++) {
-        let activity = "Repos / Récupération Active";
-        const isTrainingDay = (frequency === 2 && (i === 1 || i === 4)) ||
-            (frequency === 3 && (i === 0 || i === 2 || i === 4)) ||
-            (frequency === 4 && (i === 0 || i === 1 || i === 3 || i === 4)) ||
-            (frequency === 7);
-
-        if (isTrainingDay) {
-            activity = `Séance : ${goal} (${data.responses[6] || '30 min'})`;
-        }
-
-        schedule.push({ day: days[i], activity: activity });
+    for (const [key, value] of Object.entries(replacements)) {
+        template = template.split(key).join(value);
     }
 
-    const details = `
-        <h3 style="color: #49e619;">🏃 ${title}</h3>
-        <p>Objectif: ${goal} | Niveau: ${level}</p>
-        <ul style="line-height: 1.6;">
-            ${schedule.map(s => `<li><strong>${s.day}:</strong> ${s.activity}</li>`).join('')}
-        </ul>
-        <p><em>"La régularité est la clé du succès. On lâche rien !"</em></p>
-    `;
-
-    return {
-        title,
-        schedule,
-        details,
-        id: 'prog_' + Date.now(),
-        isPremium: false,
-        created: Date.now()
-    };
-}
-
-function saveProgram(programData) {
-    // Note: Render free tier filesystem is ephemeral. Re-deploys will delete these.
-    const programsDir = path.join(__dirname, 'programs');
-    if (!fs.existsSync(programsDir)) fs.mkdirSync(programsDir);
-
-    const filePath = path.join(programsDir, `${programData.id}.json`);
-    fs.writeFileSync(filePath, JSON.stringify(programData, null, 2));
-    return programData.id;
-}
-
-function generateEmailHTML(data, program, link) {
-    return `
-<!DOCTYPE html>
-<html>
-<body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px 20px; background-color: #f8f8f8; color: #111; line-height: 1.6;">
-    <div style="max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 4px 30px rgba(0,0,0,0.05);">
-        <div style="text-align: center; margin-bottom: 40px;">
-            <h2 style="text-transform: uppercase; letter-spacing: 0.2em; font-size: 14px; color: #888; margin-bottom: 10px;">ESSOR ACTIVE</h2>
-            <div style="height: 1px; width: 40px; background: #eee; margin: 0 auto;"></div>
-        </div>
-        
-        <h1 style="color: #000; text-align: center; font-size: 28px; font-weight: 800; margin-bottom: 20px;">Analyse en cours...</h1>
-        
-        <p style="font-size: 16px;">Bonjour <strong>${data.name}</strong>,</p>
-        
-        <p style="font-size: 16px;">Merci d'avoir complété le questionnaire ESSOR ACTIVE. Nos algorithmes analysent actuellement vos réponses pour générer votre programme optimal.</p>
-        
-        <div style="background: #fafafa; padding: 30px; border-radius: 15px; border: 1px solid #eee; margin: 30px 0;">
-            <p style="margin-top: 0; font-weight: bold; color: #000;">Résumé de votre profil :</p>
-            ${program.details}
-        </div>
-
-        <p style="font-size: 16px; margin-bottom: 30px;">Nous vous recontacterons très prochainement pour affiner cette analyse si nécessaire.</p>
-
-        <div style="text-align: center; margin-top: 40px;">
-            <a href="${link}" style="background-color: #000; color: #fff; padding: 18px 35px; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 16px; display: inline-block; transition: all 0.3s;">Accéder à mon espace</a>
-        </div>
-
-        <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #aaa; font-size: 12px;">
-            <p>© 2025 ESSOR ACTIVE. Tous droits réservés.</p>
-        </div>
-    </div>
-</body>
-</html>`;
+    return template;
 }
 
 async function handleEmailRequest(req, res) {
     try {
         const data = await parsePostBody(req);
 
-        // Use PRODUCTION domain for links
+        // Production configuration
         const PRODUCTION_URL = "https://essor-active.com";
-        const program = generateWorkout(data);
 
-        // Enrich program with user data for storage
+        // Sélection du programme intelligent
+        const program = ProgramSelector.select(data.responses);
+        if (!program) throw new Error("Erreur lors de la sélection du programme.");
+
+        // Enrichissement pour le stockage
         program.user = {
             name: data.name,
             email: data.email,
@@ -174,15 +108,15 @@ async function handleEmailRequest(req, res) {
         const msg = {
             to: data.email,
             from: process.env.SENDGRID_FROM_EMAIL || 'contact@essor-active.com',
-            subject: `🔥 Ton Programme : ${program.title}`,
+            subject: `🔥 Ton Programme Personnalisé : ${program.title}`,
             html: generateEmailHTML(data, program, programLink)
         };
 
         if (process.env.SENDGRID_API_KEY) {
             await sgMail.send(msg);
-            logToFile(`SUCCESS: Email sent to ${data.email}`);
+            logToFile(`SUCCESS: Email envoyé à ${data.email} (${program.id})`);
         } else {
-            logToFile('WARNING: Simulation Mode (No API Key)');
+            logToFile(`WARNING: Simulation Mode (No API Key) - Program: ${program.id}`);
         }
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -190,6 +124,57 @@ async function handleEmailRequest(req, res) {
     } catch (err) {
         logToFile(`ERROR: ${err.message}`);
         res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: err.message }));
+    }
+}
+
+// --- CLIENT AUTH ---
+function saveClient(clientData) {
+    const clientsDir = path.join(__dirname, 'clients');
+    if (!fs.existsSync(clientsDir)) fs.mkdirSync(clientsDir);
+    const filePath = path.join(clientsDir, `${clientData.email.replace(/[^a-zA-Z0-9]/g, '_')}.json`);
+    fs.writeFileSync(filePath, JSON.stringify(clientData, null, 2));
+}
+
+function getClient(email) {
+    const clientsDir = path.join(__dirname, 'clients');
+    const filePath = path.join(clientsDir, `${email.replace(/[^a-zA-Z0-9]/g, '_')}.json`);
+    if (fs.existsSync(filePath)) {
+        return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    }
+    return null;
+}
+
+async function handleClientRegister(req, res) {
+    try {
+        const data = await parsePostBody(req);
+        if (!data.email || !data.password) throw new Error("Email et mot de passe requis.");
+
+        const existing = getClient(data.email);
+        if (existing) throw new Error("Ce compte existe déjà.");
+
+        saveClient(data);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, message: "Inscription réussie" }));
+    } catch (err) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: err.message }));
+    }
+}
+
+async function handleClientLogin(req, res) {
+    try {
+        const data = await parsePostBody(req);
+        const client = getClient(data.email);
+
+        if (client && client.password === data.password) {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true, name: client.name, email: client.email }));
+        } else {
+            throw new Error("Email ou mot de passe incorrect.");
+        }
+    } catch (err) {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: false, error: err.message }));
     }
 }
@@ -209,6 +194,12 @@ const server = http.createServer(async (req, res) => {
     // API Handling
     if (req.url === '/api/send-program' && req.method === 'POST') {
         return handleEmailRequest(req, res);
+    }
+    if (req.url === '/api/client/register' && req.method === 'POST') {
+        return handleClientRegister(req, res);
+    }
+    if (req.url === '/api/client/login' && req.method === 'POST') {
+        return handleClientLogin(req, res);
     }
 
     if (req.url.startsWith('/api/get-program') && req.method === 'GET') {

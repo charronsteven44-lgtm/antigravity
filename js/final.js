@@ -34,8 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 // Send data to Render API (CORS enabled)
-                const API_URL = 'https://essor-api.onrender.com/api/send-program';
-                const response = await fetch(API_URL, {
+                const response = await fetch('/api/send-program', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, name, responses })
@@ -63,9 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             <p class="text-white text-base">
                                 Pour aller plus loin et débloquer tout le potentiel de votre progression, découvrez maintenant nos formules d’accompagnement ESSOR.
                             </p>
-                            <button onclick="window.location.href='subscription.html'" class="w-full bg-primary hover:bg-primary-hover text-background-dark text-xl font-black py-5 rounded-full shadow-[0_4px_30px_rgba(73,230,25,0.4)] transition-all transform active:scale-95 flex items-center justify-center gap-3">
-                                <span>DÉCOUVRIR LES ABONNEMENTS</span>
-                                <span class="material-symbols-outlined font-bold">arrow_forward</span>
+                            <button onclick="window.location.href='client-register.html'" class="w-full bg-primary hover:bg-primary-hover text-background-dark text-xl font-black py-5 rounded-full shadow-[0_4px_30px_rgba(73,230,25,0.4)] transition-all transform active:scale-95 flex items-center justify-center gap-3">
+                                <span>CRÉER MON ESPACE CLIENT</span>
+                                <span class="material-symbols-outlined font-bold">person_add</span>
                             </button>
                         </div>
                     `;

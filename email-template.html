@@ -159,53 +159,51 @@
             <h2 class="greeting">Bonjour {{name}},</h2>
 
             <div class="message">
-                <p>Félicitations ! Vous venez de franchir la <span class="highlight">première étape vers votre
-                        transformation</span>.</p>
+                <p>Merci d'avoir complété le questionnaire <span class="highlight">ESSOR ACTIVE</span> !</p>
 
-                <p>Votre programme personnalisé est prêt. Nous avons analysé vos réponses et créé un plan d'entraînement
-                    <span class="highlight">100% adapté à votre profil</span>, vos objectifs et votre disponibilité.</p>
-
-                <p>Ce n'est pas un programme générique. C'est <span class="highlight">VOTRE programme</span>, conçu pour
-                    maximiser vos résultats tout en respectant vos contraintes et votre niveau actuel.</p>
+                <p>Nous avons analysé vos réponses et créé un programme <span class="highlight">100% personnalisé</span>
+                    pour vous :</p>
             </div>
 
-            <!-- Features -->
+            <!-- Features / Program Recap -->
             <div class="features">
-                <div class="feature-item">
-                    <div class="feature-icon">✓</div>
-                    <div class="feature-text">Programme 7 jours structuré et progressif</div>
+                <div style="margin-bottom: 20px;">
+                    <p style="margin: 5px 0; font-size: 18px; color: #49e619; font-weight: 800;">➡ {{program_title}}</p>
+                    <p style="margin: 5px 0;">➡ Objectif : <span class="highlight">{{goal}}</span></p>
+                    <p style="margin: 5px 0;">➡ Fréquence : <span class="highlight">{{frequency}}</span></p>
+                    <p style="margin: 5px 0;">➡ Durée : <span class="highlight">{{duration}} par séance</span></p>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon">✓</div>
-                    <div class="feature-text">Exercices adaptés à votre niveau et matériel</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">✓</div>
-                    <div class="feature-text">Séances optimisées selon votre temps disponible</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">✓</div>
-                    <div class="feature-text">Prise en compte de vos douleurs et limitations</div>
+
+                <div style="padding-top: 15px; border-top: 1px solid rgba(73,230,25,0.2);">
+                    <p style="font-size: 14px; color: #d0d0d0; font-style: italic;">"{{summary}}"</p>
                 </div>
             </div>
 
             <div class="message">
-                <p><strong>Votre succès commence maintenant.</strong> Chaque séance vous rapproche de vos objectifs.
-                    Chaque répétition compte. Chaque effort paie.</p>
+                <h3 style="color: #ffffff; margin-bottom: 15px;">Votre programme détaillé :</h3>
+                <div
+                    style="background: rgba(255,255,255,0.03); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05);">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                        {{schedule_table}}
+                    </table>
+                </div>
+            </div>
 
-                <p>Ne laissez pas cette motivation s'échapper. <span class="highlight">Votre programme vous
-                        attend</span>.</p>
+            <div class="message" style="margin-top: 30px;">
+                <p><strong>Commencez dès aujourd'hui et suivez vos progrès !</strong> Chaque effort compte pour
+                    atteindre vos objectifs.</p>
             </div>
 
             <!-- CTA Button -->
             <div class="cta-container">
                 <a href="{{program_link}}" class="cta-button">
-                    Accéder à mon programme 100 % personnalisé
+                    Accéder à mon espace complet
                 </a>
             </div>
 
             <div class="message" style="margin-top: 40px; font-size: 14px; color: #a0a0a0;">
                 <p>Besoin d'aide ? Notre équipe est là pour vous accompagner à chaque étape de votre parcours.</p>
+                <p>Sportivement,<br><span class="highlight">L'équipe Essor Active</span></p>
             </div>
         </div>
 

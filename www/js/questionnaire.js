@@ -182,10 +182,12 @@ function selectOption(questionId, value) {
     saveResponses();
     displayQuestion(currentStep);
 
-    // Simple auto-advance for single choice if not last question
-    setTimeout(() => {
-        nextStep();
-    }, 200);
+    // Auto-advance for all questions
+    if (currentStep < QUESTIONS.length) {
+        setTimeout(() => {
+            nextStep();
+        }, 400);
+    }
 }
 
 function toggleOption(questionId, value) {
@@ -206,6 +208,13 @@ function toggleOption(questionId, value) {
     }
     saveResponses();
     displayQuestion(currentStep);
+
+    // Auto-advance even for multiple choice to maintain fluidity
+    if (currentStep < QUESTIONS.length) {
+        setTimeout(() => {
+            nextStep();
+        }, 600);
+    }
 }
 
 function validateStep() {

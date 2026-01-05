@@ -92,7 +92,7 @@
             <div class="space-y-3">
                 <p class="text-sm font-bold text-gray-400 uppercase tracking-wider pl-1">Paramètres</p>
 
-                <button
+                <button onclick="window.location.href='edit-profile.html'"
                     class="w-full flex items-center justify-between p-4 bg-white dark:bg-surface-dark rounded-2xl border border-slate-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
                     <div class="flex items-center gap-4">
                         <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
@@ -136,7 +136,7 @@
         <nav
             class="absolute bottom-0 left-0 w-full z-50 bg-[#f6f8f6]/95 dark:bg-[#131811]/95 backdrop-blur-lg border-t border-slate-200 dark:border-[#2c3829] pb-6 pt-2">
             <div class="flex justify-around items-center px-2">
-                <a href="dashboard.html"
+                <a href="client-dashboard.html"
                     class="flex flex-col items-center justify-center gap-1 min-w-[64px] group opacity-60 hover:opacity-100 transition-opacity">
                     <span
                         class="material-symbols-outlined text-[28px] text-slate-800 dark:text-white group-hover:text-primary">home</span>
@@ -152,24 +152,24 @@
     </div>
 
     <script>
-        // Load data from localStorage simulation
         document.addEventListener('DOMContentLoaded', () => {
-            const saved = localStorage.getItem('responses');
-            if (saved) {
-                const data = JSON.parse(saved);
-                // Goal is Q5 in new structure, Q6 in list? It varies. Let's try flexible
-                // Based on questionnaire.js: Q1 is Goal
-                const goalMap = {
-                    'perte_poids': 'Perte de Poids',
-                    'muscle': 'Prise de Masse',
-                    'santé': 'Santé & Forme',
-                    'performance': 'Performance'
-                };
+            const clientData = JSON.parse(localStorage.getItem('clientUser') || '{}');
+            const responses = JSON.parse(localStorage.getItem('responses') || '{}');
 
-                if (data[1]) document.getElementById('profile-goal').textContent = data[1];
-                if (data[7]) document.getElementById('profile-freq').textContent = data[7] + 'x / sem';
-                if (data[10]) document.getElementById('profile-name').textContent = data[10];
+            if (clientData.name) {
+                document.getElementById('profile-name').textContent = clientData.name;
             }
+
+            document.getElementById('profile-goal').textContent = responses[5] || "Non défini";
+            document.getElementById('profile-freq').textContent = responses[7] || "3x / sem";
+
+            // Logout Logic
+            const logoutBtn = document.querySelector('button .text-red-500').parentElement;
+            logoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('isClientLoggedIn');
+                localStorage.removeItem('clientUser');
+                window.location.href = 'index.html';
+            });
         });
     </script>
 </body>

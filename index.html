@@ -46,12 +46,15 @@
     <script>
         // REDIRECTION LOGIC
         document.addEventListener('DOMContentLoaded', () => {
+            const isClientLoggedIn = localStorage.getItem('isClientLoggedIn');
             const lastProgramId = localStorage.getItem('lastProgramId');
             const userProgram = localStorage.getItem('userProgram');
 
-            if (lastProgramId || userProgram) {
-                // Existing users go to dashboard
-                window.location.href = 'dashboard.html';
+            if (isClientLoggedIn === 'true') {
+                window.location.href = 'client-dashboard.html';
+            } else if (lastProgramId || userProgram) {
+                // Legacy support
+                window.location.href = 'client-dashboard.html';
             } else {
                 // New users go directly to questionnaire
                 window.location.href = 'questionnaire.html';

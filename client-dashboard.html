@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html class="dark" lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Mon Espace Client - ESSOR ACTIVE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="js/program-logic.js"></script>
+    <script src="js/program-selector.js"></script>
+    <script src="js/program-db.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#49e619", "primary-dark": "#36b012", "background-light": "#f6f8f6", "background-dark": "#152111", "surface-dark": "#1E291B" },
+                    fontFamily: { "display": ["Manrope", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "1.5rem", "2xl": "2.5rem" },
+                    boxShadow: { 'neon': '0 0 15px rgba(73, 230, 25, 0.3)' }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        body {
+            min-height: 100vh;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-black font-display flex items-center justify-center min-h-screen p-0 sm:p-4">
+    <div id="app-container"
+        class="relative flex flex-col h-[100dvh] w-full max-w-md bg-[#f6f8f6] dark:bg-background-dark sm:rounded-[3rem] shadow-2xl overflow-hidden ring-8 ring-black/5 dark:ring-white/5">
+
+        <!-- Header -->
+        <header class="flex items-center justify-between px-6 pt-6 pb-2 shrink-0">
+            <div class="flex flex-col">
+                <p class="text-gray-500 dark:text-[#a4b89d] text-sm font-medium">Tableau de Bord Client</p>
+                <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white" id="welcome-name">Bonjour !
+                </h1>
+            </div>
+            <div class="relative cursor-pointer group" onclick="window.location.href='/profile.html'">
+                <div
+                    class="w-12 h-12 rounded-full border-2 border-primary p-0.5 bg-gray-800 overflow-hidden shadow-neon transition-transform group-hover:scale-110">
+                    <img id="user-avatar"
+                        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200"
+                        class="w-full h-full object-cover rounded-full">
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto px-6 py-4 pb-24 space-y-6">
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white dark:bg-surface-dark p-4 rounded-3xl border border-white/5 shadow-sm">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">Objectif Actuel</p>
+                    <p class="text-sm font-bold text-primary" id="client-goal">Chargement...</p>
+                </div>
+                <div class="bg-white dark:bg-surface-dark p-4 rounded-3xl border border-white/5 shadow-sm">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">Fréquence</p>
+                    <p class="text-sm font-bold text-white" id="client-freq">Chargement...</p>
+                </div>
+            </div>
+
+            <!-- Program Card -->
+            <div id="program-container">
+                <div class="bg-primary p-5 rounded-3xl shadow-neon relative overflow-hidden group cursor-pointer"
+                    onclick="window.location.href='/my-program-pro.html'">
+                    <div class="absolute top-0 right-0 p-4 opacity-10">
+                        <span class="material-symbols-outlined text-6xl text-black">fitness_center</span>
+                    </div>
+                    <div class="relative z-10 text-black">
+                        <span class="bg-black/20 text-[10px] font-bold px-2 py-1 rounded-lg uppercase">Programme IA
+                            Actif</span>
+                        <h3 class="text-xl font-extrabold mt-2" id="program-title">Mon Programme</h3>
+                        <p class="text-sm font-medium opacity-70 mt-1" id="program-summary">Génération de votre routine
+                            optimale...</p>
+
+                        <div class="mt-4 flex items-center gap-3">
+                            <div class="bg-black/10 px-2 py-1 rounded-lg flex items-center gap-1 text-[10px] font-bold">
+                                <span class="material-symbols-outlined text-[14px]">schedule</span>
+                                <span id="session-duration">30 min</span>
+                            </div>
+                            <div class="bg-black/10 px-2 py-1 rounded-lg flex items-center gap-1 text-[10px] font-bold">
+                                <span class="material-symbols-outlined text-[14px]">bolt</span>
+                                <span id="client-level">Débutant</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Planning Recap -->
+            <div class="space-y-3">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">Planning de la semaine</h3>
+                <div id="mini-planning" class="space-y-2">
+                    <!-- Dynamic Days -->
+                </div>
+            </div>
+
+            <!-- Progress Card Placeholder -->
+            <div
+                class="bg-white dark:bg-surface-dark p-6 rounded-3xl border border-white/5 flex flex-col items-center justify-center text-center py-10">
+                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                    <span class="material-symbols-outlined text-primary text-3xl">trending_up</span>
+                </div>
+                <h4 class="text-white font-bold">Suivez vos progrès</h4>
+                <p class="text-gray-400 text-xs px-4 mt-2">Enregistrez vos séances chaque jour pour visualiser votre
+                    évolution sur le long terme.</p>
+                <button
+                    class="mt-4 bg-white/5 hover:bg-white/10 text-white text-xs font-bold px-6 py-2.5 rounded-full border border-white/10 transition-colors">Bientôt
+                    disponible</button>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav
+            class="absolute bottom-0 left-0 w-full z-50 bg-[#f6f8f6]/95 dark:bg-[#131811]/95 backdrop-blur-lg border-t border-slate-200 dark:border-[#2c3829] pb-8 pt-3">
+            <div class="flex justify-around items-center">
+                <a href="client-dashboard.html" class="flex flex-col items-center gap-1 text-primary">
+                    <span class="material-symbols-outlined text-[28px]">analytics</span>
+                    <span class="text-[10px] font-bold">Tableau</span>
+                </a>
+                <a href="my-program-pro.html" class="flex flex-col items-center gap-1 text-gray-400">
+                    <span class="material-symbols-outlined text-[28px]">calendar_today</span>
+                    <span class="text-[10px] font-medium">Programme</span>
+                </a>
+                <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-400">
+                    <span class="material-symbols-outlined text-[28px]">person</span>
+                    <span class="text-[10px] font-medium">Profil</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userData = JSON.parse(localStorage.getItem('clientUser') || '{}');
+            const responses = JSON.parse(localStorage.getItem('responses') || '{}');
+
+            if (userData.name) {
+                document.getElementById('welcome-name').textContent = `Bonjour ${userData.name} !`;
+            }
+
+            // Generate/Load Program via Selector
+            const program = ProgramSelector.select(responses);
+            if (program) {
+                document.getElementById('program-title').textContent = program.title;
+                document.getElementById('program-summary').textContent = program.description;
+                document.getElementById('client-goal').textContent = responses[5] || program.goal;
+                document.getElementById('client-freq').textContent = responses[7] || "3x / semaine";
+                document.getElementById('session-duration').textContent = responses[6] || "30 min";
+                document.getElementById('client-level').textContent = responses[4] || "Débutant";
+
+                // Render Mini Planning
+                const planningContainer = document.getElementById('mini-planning');
+                program.schedule.slice(0, 3).forEach(day => {
+                    const isRest = day.activity.toLowerCase().includes('repos');
+                    const row = `
+                               <div class="flex items-center justify-between bg-white/5 p-4 rounded-2xl border border-white/5">
+                                   <div class="flex items-center gap-3">
+                                       <div class="w-8 h-8 rounded-lg ${isRest ? 'bg-gray-800' : 'bg-primary/20'} flex items-center justify-center">
+                                           <span class="text-[10px] font-bold ${isRest ? 'text-gray-500' : 'text-primary'}">${day.day.substring(0, 3)}</span>
+                                       </div>
+                                       <p class="text-sm font-medium text-white line-clamp-1">${day.activity}</p>
+                                   </div>
+                                   <span class="material-symbols-outlined text-[18px] ${isRest ? 'text-gray-600' : 'text-primary'}">${isRest ? 'bed' : 'timer'}</span>
+                               </div>
+                           `;
+                    planningContainer.insertAdjacentHTML('beforeend', row);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

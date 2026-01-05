@@ -167,7 +167,7 @@ function displayQuestion(step) {
                     : currentResponses === optText;
 
                 btn.className = `w-full text-left p-6 rounded-2xl border transition-all duration-300 group flex items-center justify-between relative overflow-hidden ${isSelected
-                    ? 'border-white bg-white/10'
+                    ? 'border-primary bg-primary/10 shadow-[0_0_20px_rgba(73,230,25,0.15)]'
                     : 'border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20'
                     }`;
 
@@ -181,14 +181,14 @@ function displayQuestion(step) {
 
                 const content = `
                     <div class="flex items-center gap-5 z-10 transition-transform duration-300 ${isSelected ? 'translate-x-1' : ''}">
-                        <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center transition-all duration-300 ${isSelected ? 'bg-white border-white' : 'bg-transparent'}">
-                            <span class="material-symbols-outlined text-sm ${isSelected ? 'text-black' : 'text-white/20'}">${q.type === 'multiple' ? 'check' : 'circle'}</span>
+                        <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center transition-all duration-300 ${isSelected ? 'bg-primary border-primary' : 'bg-transparent'}">
+                            <span class="material-symbols-outlined text-sm ${isSelected ? 'text-background-dark font-bold' : 'text-white/20'}">${q.type === 'multiple' ? 'check' : 'circle'}</span>
                         </div>
                         <div>
-                            <p class="text-white font-medium text-lg leading-none">${optText}</p>
+                            <p class="text-white font-medium text-lg leading-none transition-colors duration-300 ${isSelected ? 'text-primary' : ''}">${optText}</p>
                         </div>
                     </div>
-                    <div class="w-2 h-2 rounded-full bg-white transition-opacity duration-300 ${isSelected ? 'opacity-100' : 'opacity-0'}"></div>
+                    <div class="w-2 h-2 rounded-full bg-primary transition-opacity duration-300 ${isSelected ? 'opacity-100 shadow-[0_0_10px_#49e619]' : 'opacity-0'}"></div>
                 `;
                 btn.innerHTML = content;
                 optsDiv.appendChild(btn);
@@ -248,11 +248,11 @@ function selectOption(questionId, value) {
     saveResponses();
     displayQuestion(currentStep);
 
-    // Simple auto-advance for single choice if not last question
+    // Auto-advance for all questions
     if (currentStep < QUESTIONS.length) {
         setTimeout(() => {
             nextStep();
-        }, 350);
+        }, 400);
     }
 }
 
@@ -275,9 +275,9 @@ function toggleOption(questionId, value) {
     saveResponses();
     displayQuestion(currentStep);
 
-    // Auto-advance for question 9 (pain/injury) after selection
-    const q = QUESTIONS[currentStep - 1];
-    if (q.id === 9 && responses[questionId] && responses[questionId].length > 0) {
+    // Auto-advance even for multiple choice (like question 9) to maintain fluidity
+    // Delay slightly longer to let the user see the selection feedback
+    if (currentStep < QUESTIONS.length) {
         setTimeout(() => {
             nextStep();
         }, 600);
