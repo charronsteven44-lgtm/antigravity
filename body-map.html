@@ -36,14 +36,17 @@
             stroke: #49e619;
             /* Primary */
             stroke-width: 1;
-            opacity: 0.6;
+            opacity: 0.0;
+            /* Invisible by default if using silhouette, but user wants clickable highlights */
+            /* Actually, for the "Realistic" style we might want visible wireframes or low opacity */
+            opacity: 0.3;
             transition: all 0.3s ease;
             cursor: pointer;
         }
 
         .muscle-path:hover {
             fill: #3a4b35;
-            opacity: 0.8;
+            opacity: 0.6;
         }
 
         #g-front,
@@ -87,52 +90,73 @@
         <!-- ANTERIOR VIEW (FACE) -->
         <div id="body-front" class="w-full h-full max-w-lg relative transition-opacity duration-500">
             <svg id="svg-front" viewBox="0 0 500 900" class="w-full h-full drop-shadow-[0_0_15px_rgba(73,230,25,0.1)]">
+                <!-- Silhouette / Body Base -->
+                <path
+                    d="M250,50 C230,50 215,80 215,100 C215,110 220,130 225,140 C190,150 145,170 145,210 C145,250 150,300 155,350 C155,380 160,400 170,420 C185,480 195,520 205,600 C205,650 195,750 195,800 C195,850 175,880 185,880 C205,880 235,860 250,860 C265,860 295,880 315,880 C325,880 305,850 305,800 C305,750 295,650 295,600 C305,520 315,480 330,420 C340,400 345,380 345,350 C350,300 355,250 355,210 C355,170 310,150 275,140 C280,130 285,110 285,100 C285,80 270,50 250,50 Z"
+                    fill="#0e0e0e" stroke="none" />
+
                 <g id="g-front">
                     <!-- Head/Neck -->
-                    <path id="scm" class="muscle-path" d="M230,110 L220,150 L240,160 L245,120 Z"
+                    <path id="scm" class="muscle-path" d="M230,115 C228,130 225,145 240,155 C242,150 245,140 245,125 Z"
                         onclick="onMuscleClick('scm', this)" />
-                    <path id="scm_r" class="muscle-path" d="M270,110 L280,150 L260,160 L255,120 Z"
+                    <path id="scm_r" class="muscle-path"
+                        d="M270,115 C272,130 275,145 260,155 C258,150 255,140 255,125 Z"
                         onclick="onMuscleClick('scm', this)" />
 
                     <!-- Torso -->
                     <path id="pectoral_major" class="muscle-path"
-                        d="M190,190 Q250,220 310,190 L330,220 Q250,280 170,220 Z"
+                        d="M250,170 C220,170 190,180 180,200 C175,220 185,240 215,240 C235,240 245,230 250,225 C255,230 270,240 285,240 C315,240 325,220 320,200 C310,180 280,170 250,170 Z M250,170 L250,225"
                         onclick="onMuscleClick('pectoral_major', this)" />
-                    <path id="rectus_abdominis" class="muscle-path" d="M220,280 L280,280 L270,450 L230,450 Z"
+
+                    <path id="rectus_abdominis" class="muscle-path"
+                        d="M225,245 C235,242 265,242 275,245 C278,280 275,350 270,380 C260,390 240,390 230,380 C225,350 222,280 225,245 Z"
                         onclick="onMuscleClick('rectus_abdominis', this)" />
-                    <path id="obliques" class="muscle-path" d="M190,280 Q170,350 190,440 L230,450 L220,280 Z"
+
+                    <path id="obliques" class="muscle-path"
+                        d="M220,250 C200,260 190,300 195,360 C210,380 225,375 228,375 C232,340 232,280 220,250 Z"
                         onclick="onMuscleClick('obliques', this)" />
-                    <path id="obliques_r" class="muscle-path" d="M310,280 Q330,350 310,440 L270,450 L280,280 Z"
+                    <path id="obliques_r" class="muscle-path"
+                        d="M280,250 C300,260 310,300 305,360 C290,380 275,375 272,375 C268,340 268,280 280,250 Z"
                         onclick="onMuscleClick('obliques', this)" />
 
                     <!-- Arms -->
-                    <path id="deltoid_ant" class="muscle-path" d="M160,180 Q130,200 135,240 L165,230 L190,190 Z"
+                    <path id="deltoid_ant" class="muscle-path"
+                        d="M180,160 C160,165 145,180 140,210 C150,225 165,220 175,200 C180,190 190,170 180,160 Z"
                         onclick="onMuscleClick('deltoid_ant', this)" />
-                    <path id="deltoid_ant_r" class="muscle-path" d="M340,180 Q370,200 365,240 L335,230 L310,190 Z"
+                    <path id="deltoid_ant_r" class="muscle-path"
+                        d="M320,160 C340,165 355,180 360,210 C350,225 335,220 325,200 C320,190 310,170 320,160 Z"
                         onclick="onMuscleClick('deltoid_ant', this)" />
 
-                    <path id="biceps" class="muscle-path" d="M135,240 L125,310 L155,310 L165,230 Z"
+                    <path id="biceps" class="muscle-path"
+                        d="M145,215 C140,240 140,260 150,265 C160,260 170,240 170,220 C160,220 155,215 145,215 Z"
                         onclick="onMuscleClick('biceps', this)" />
-                    <path id="biceps_r" class="muscle-path" d="M365,240 L375,310 L345,310 L335,230 Z"
+                    <path id="biceps_r" class="muscle-path"
+                        d="M355,215 C360,240 360,260 350,265 C340,260 330,240 330,220 C340,220 345,215 355,215 Z"
                         onclick="onMuscleClick('biceps', this)" />
 
-                    <path id="forearm_flexors" class="muscle-path" d="M125,320 L110,420 L140,420 L150,320 Z"
+                    <path id="forearm_flexors" class="muscle-path"
+                        d="M140,270 C130,290 120,330 125,360 C135,365 150,350 155,300 C158,280 150,270 140,270 Z"
                         onclick="onMuscleClick('forearm_flexors', this)" />
-                    <path id="forearm_flexors_r" class="muscle-path" d="M375,320 L390,420 L360,420 L350,320 Z"
+                    <path id="forearm_flexors_r" class="muscle-path"
+                        d="M360,270 C370,290 380,330 375,360 C365,365 350,350 345,300 C342,280 350,270 360,270 Z"
                         onclick="onMuscleClick('forearm_flexors', this)" />
 
                     <!-- Legs -->
-                    <path id="quadriceps" class="muscle-path" d="M200,470 L180,680 L240,680 L260,550 L230,470 Z"
+                    <path id="quadriceps" class="muscle-path"
+                        d="M210,400 C200,450 195,550 205,600 C220,610 240,610 250,600 C250,550 245,450 240,400 Z"
                         onclick="onMuscleClick('quadriceps', this)" />
-                    <path id="quadriceps_r" class="muscle-path" d="M300,470 L320,680 L260,680 L240,550 L270,470 Z"
+                    <path id="quadriceps_r" class="muscle-path"
+                        d="M290,400 C300,450 305,550 295,600 C280,610 260,610 250,600 C250,550 252,450 260,400 Z"
                         onclick="onMuscleClick('quadriceps', this)" />
 
-                    <path id="adductors" class="muscle-path" d="M245,490 L245,620 L260,550 Z"
+                    <path id="adductors" class="muscle-path" d="M245,480 L245,550 C260,530 255,480 255,480 Z"
                         onclick="onMuscleClick('adductors', this)" />
 
-                    <path id="tibialis_anterior" class="muscle-path" d="M190,700 L180,850 L210,850 L220,700 Z"
+                    <path id="tibialis_anterior" class="muscle-path"
+                        d="M205,620 C200,660 195,740 200,780 C210,785 220,780 220,750 C220,700 215,640 210,620 Z"
                         onclick="onMuscleClick('tibialis_anterior', this)" />
-                    <path id="tibialis_anterior_r" class="muscle-path" d="M310,700 L320,850 L290,850 L280,700 Z"
+                    <path id="tibialis_anterior_r" class="muscle-path"
+                        d="M295,620 C300,660 305,740 300,780 C290,785 280,780 280,750 C280,700 285,640 290,620 Z"
                         onclick="onMuscleClick('tibialis_anterior', this)" />
                 </g>
             </svg>
@@ -141,38 +165,53 @@
         <!-- POSTERIOR VIEW (DOS) -->
         <div id="body-back" class="w-full h-full max-w-lg relative transition-opacity duration-500 hidden">
             <svg id="svg-back" viewBox="0 0 500 900" class="w-full h-full drop-shadow-[0_0_15px_rgba(73,230,25,0.1)]">
+                <!-- Silhouette Back -->
+                <path
+                    d="M250,50 C230,50 215,80 215,100 C215,110 210,130 190,150 C160,160 145,180 145,230 C145,280 155,330 160,360 C160,390 165,400 170,420 C185,480 195,520 205,600 C205,650 195,750 195,800 C195,850 175,880 185,880 C205,880 235,860 250,860 C265,860 295,880 315,880 C325,880 305,850 305,800 C305,750 295,650 295,600 C305,520 315,480 330,420 C345,400 350,390 350,360 C355,330 355,280 355,230 C355,210 350,160 310,150 C290,130 285,110 285,100 C285,80 270,50 250,50 Z"
+                    fill="#0e0e0e" stroke="none" />
+
                 <g id="g-back">
                     <!-- Back Muscles -->
-                    <path id="trapezius_sup" class="muscle-path" d="M220,110 L280,110 L320,180 L180,180 Z"
+                    <path id="trapezius_sup" class="muscle-path"
+                        d="M220,110 C210,130 190,140 170,155 C220,170 280,170 330,155 C310,140 290,130 280,110 L250,110 L220,110 Z"
                         onclick="onMuscleClick('trapezius_sup', this)" />
-                    <path id="trapezius_mid_inf" class="muscle-path" d="M220,190 L280,190 L250,350 Z"
+                    <path id="trapezius_mid_inf" class="muscle-path"
+                        d="M250,170 L200,180 C220,280 250,320 250,320 C250,320 280,280 300,180 Z"
                         onclick="onMuscleClick('trapezius_mid_inf', this)" />
 
                     <path id="latissimus" class="muscle-path"
-                        d="M190,260 L160,320 L240,450 L260,450 L340,320 L310,260 L250,400 Z"
+                        d="M200,280 C180,260 170,220 175,200 C190,200 200,210 210,220 L250,330 L290,220 C300,210 310,200 325,200 C330,220 320,260 300,280 C290,340 270,360 250,360 C230,360 210,340 200,280 Z"
                         onclick="onMuscleClick('latissimus', this)" />
 
                     <!-- Arms Back -->
-                    <path id="triceps" class="muscle-path" d="M140,240 L130,310 L160,310 L170,240 Z"
+                    <path id="triceps" class="muscle-path"
+                        d="M150,220 C145,250 150,270 155,280 C160,270 170,250 175,220 C170,220 160,215 150,220 Z"
                         onclick="onMuscleClick('triceps', this)" />
-                    <path id="triceps_r" class="muscle-path" d="M360,240 L370,310 L340,310 L330,240 Z"
+                    <path id="triceps_r" class="muscle-path"
+                        d="M350,220 C355,250 350,270 345,280 C335,270 330,250 325,220 C330,220 340,215 350,220 Z"
                         onclick="onMuscleClick('triceps', this)" />
 
                     <!-- Glutes -->
-                    <path id="gluteus_max" class="muscle-path" d="M210,460 Q170,500 200,550 L250,550 L250,460 Z"
+                    <path id="gluteus_max" class="muscle-path"
+                        d="M215,400 C200,410 190,450 195,480 C210,500 245,490 250,480 L250,400 Z"
                         onclick="onMuscleClick('gluteus_max', this)" />
-                    <path id="gluteus_max_r" class="muscle-path" d="M290,460 Q330,500 300,550 L250,550 L250,460 Z"
+                    <path id="gluteus_max_r" class="muscle-path"
+                        d="M285,400 C300,410 310,450 305,480 C290,500 255,490 250,480 L250,400 Z"
                         onclick="onMuscleClick('gluteus_max', this)" />
 
                     <!-- Legs Back -->
-                    <path id="hamstrings" class="muscle-path" d="M200,560 L190,690 L240,690 L240,560 Z"
+                    <path id="hamstrings" class="muscle-path"
+                        d="M205,500 C200,550 205,600 210,620 C220,630 240,630 250,620 C250,550 250,500 250,500 Z"
                         onclick="onMuscleClick('hamstrings', this)" />
-                    <path id="hamstrings_r" class="muscle-path" d="M300,560 L310,690 L260,690 L260,560 Z"
+                    <path id="hamstrings_r" class="muscle-path"
+                        d="M295,500 C300,550 295,600 290,620 C280,630 260,630 250,620 C250,550 250,500 250,500 Z"
                         onclick="onMuscleClick('hamstrings', this)" />
 
-                    <path id="calves" class="muscle-path" d="M190,700 L200,800 L230,780 L235,700 Z"
+                    <path id="calves" class="muscle-path"
+                        d="M200,640 C195,660 190,700 200,720 C210,730 220,720 230,710 C235,680 230,650 225,640 Z"
                         onclick="onMuscleClick('calves', this)" />
-                    <path id="calves_r" class="muscle-path" d="M310,700 L300,800 L270,780 L265,700 Z"
+                    <path id="calves_r" class="muscle-path"
+                        d="M300,640 C305,660 310,700 300,720 C290,730 280,720 270,710 C265,680 270,650 275,640 Z"
                         onclick="onMuscleClick('calves', this)" />
                 </g>
             </svg>
@@ -234,14 +273,36 @@
             </div>
 
             <!-- Action Button -->
-            <button
+            <button onclick="showExercises()"
                 class="w-full bg-primary text-black font-black py-4 rounded-2xl shadow-neon mt-4 uppercase tracking-widest text-sm hover:scale-[1.02] transition-transform">
                 Voir les exercices liés
             </button>
         </div>
     </div>
 
+    <!-- EXERCISE LIST POPUP -->
+    <div id="exercise-panel"
+        class="fixed inset-0 z-50 pointer-events-none opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center sm:p-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm pointer-events-auto" onclick="closeExercises()"></div>
+        <div class="bg-[#1a1a1a] w-full sm:w-full sm:max-w-lg rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl pointer-events-auto transform translate-y-full transition-transform duration-300 max-h-[85vh] flex flex-col border border-white/10"
+            id="exercise-panel-content">
+
+            <div
+                class="p-6 border-b border-white/5 flex justify-between items-center bg-[#131313] rounded-t-[2rem] shrink-0">
+                <h3 class="text-xl font-black text-white uppercase italic">Exercices Liés</h3>
+                <button onclick="closeExercises()" class="p-2 bg-white/5 rounded-full hover:bg-white/10 text-white">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div id="exercise-list" class="p-6 overflow-y-auto space-y-4 hide-scrollbar">
+                <!-- Content -->
+            </div>
+        </div>
+    </div>
+
     <!-- SCRIPTS -->
+    <script src="js/exercises-db.js"></script>
     <script src="js/body-map-data.js"></script>
     <script src="js/body-map-logic.js"></script>
     <script>
@@ -251,6 +312,60 @@
         function closeSheet() {
             document.getElementById('detail-sheet').style.transform = 'translateY(110%)';
             resetZoom();
+        }
+
+        function showExercises() {
+            if (!activeMuscle) return;
+            const data = MUSCLE_DATA[activeMuscle];
+            if (!data || !data.relatedExercises) {
+                alert("Aucun exercice spécifique lié pour le moment.");
+                return;
+            }
+
+            const list = document.getElementById('exercise-list');
+            list.innerHTML = '';
+
+            // Map IDs to DB objects
+            const dbArray = Object.values(EXERCISES_DB);
+
+            data.relatedExercises.forEach(exId => {
+                const exercise = dbArray.find(e => e.id === exId);
+                if (exercise) {
+                    const html = `
+                    <div class="bg-black/30 rounded-xl overflow-hidden border border-white/5">
+                        <div class="relative h-48 bg-black">
+                             <iframe src="${exercise.video}" class="absolute inset-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-white text-lg mb-2">${exercise.name}</h4>
+                            <p class="text-sm text-gray-400 mb-2"><strong class="text-white">Instructions:</strong> ${exercise.instructions}</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <span class="text-[10px] uppercase font-bold text-primary bg-primary/10 px-2 py-1 rounded">Recommandé</span>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                    list.innerHTML += html;
+                }
+            });
+
+            const panel = document.getElementById('exercise-panel');
+            const content = document.getElementById('exercise-panel-content');
+
+            panel.classList.remove('pointer-events-none', 'opacity-0');
+            setTimeout(() => {
+                content.style.transform = 'translateY(0)';
+            }, 10);
+        }
+
+        function closeExercises() {
+            const panel = document.getElementById('exercise-panel');
+            const content = document.getElementById('exercise-panel-content');
+
+            content.style.transform = 'translateY(100%)';
+            setTimeout(() => {
+                panel.classList.add('opacity-0', 'pointer-events-none');
+            }, 300);
         }
     </script>
 </body>
