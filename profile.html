@@ -22,6 +22,7 @@
             }
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
@@ -85,19 +86,42 @@
 
             <!-- Stats Grid -->
             <div class="grid grid-cols-2 gap-4">
-                <div class="premium-card p-5 rounded-3xl flex flex-col gap-1">
-                    <span class="text-gray-500 text-[10px] font-bold uppercase tracking-wider">Poids actuel</span>
+                <button onclick="openWeightModal()"
+                    class="premium-card p-5 rounded-3xl flex flex-col gap-1 hover:bg-white/5 transition-colors text-left group">
+                    <div class="flex justify-between w-full">
+                        <span class="text-gray-500 text-[10px] font-bold uppercase tracking-wider">Poids actuel</span>
+                        <span
+                            class="material-symbols-outlined text-gray-600 text-[16px] group-hover:text-primary transition-colors">edit</span>
+                    </div>
                     <div class="flex items-baseline gap-1">
                         <span class="text-2xl font-black text-white" id="stat-weight">--</span>
                         <span class="text-gray-400 text-xs font-bold" id="unit-weight">kg</span>
                     </div>
-                </div>
+                </button>
                 <div class="premium-card p-5 rounded-3xl flex flex-col gap-1">
                     <span class="text-gray-500 text-[10px] font-bold uppercase tracking-wider">Taille</span>
                     <div class="flex items-baseline gap-1">
                         <span class="text-2xl font-black text-white" id="stat-height">--</span>
                         <span class="text-gray-400 text-xs font-bold" id="unit-height">cm</span>
                     </div>
+                </div>
+            </div>
+
+            <!-- Weight Chart Card -->
+            <div class="premium-card p-6 rounded-3xl space-y-4">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-white font-bold">Évolution Poids</h3>
+                    <div class="flex items-center gap-1 bg-white/5 rounded-lg p-1">
+                        <button onclick="updateChartRange('1M')"
+                            class="chart-filter px-2 py-0.5 text-[10px] font-bold rounded text-black bg-white">1M</button>
+                        <button onclick="updateChartRange('3M')"
+                            class="chart-filter px-2 py-0.5 text-[10px] font-bold rounded text-gray-400 hover:text-white">3M</button>
+                        <button onclick="updateChartRange('ALL')"
+                            class="chart-filter px-2 py-0.5 text-[10px] font-bold rounded text-gray-400 hover:text-white">TOUT</button>
+                    </div>
+                </div>
+                <div class="h-48 w-full relative">
+                    <canvas id="weight-chart"></canvas>
                 </div>
             </div>
 
@@ -236,7 +260,38 @@
         </nav>
     </div>
 
+
+    <!-- Weight Edit Modal -->
+    <div id="weight-modal"
+        class="fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeWeightModal()"></div>
+        <div class="bg-[#1a1a1a] p-6 rounded-3xl w-full max-w-sm relative z-10 border border-white/10 shadow-2xl transform scale-95 transition-transform duration-300"
+            id="weight-modal-content">
+            <h3 class="text-white text-lg font-bold mb-4">Mettre à jour mon poids</h3>
+
+            <div class="mb-6">
+                <label class="block text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Poids actuel
+                    (kg)</label>
+                <div class="flex items-center bg-black/30 rounded-xl border border-white/10 px-4 py-2">
+                    <input type="number" id="weight-input"
+                        class="bg-transparent text-white text-2xl font-bold w-full focus:outline-none"
+                        placeholder="00.0" step="0.1">
+                    <span class="text-gray-500 font-bold">kg</span>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="closeWeightModal()"
+                    class="flex-1 py-3 text-sm font-bold text-gray-400 hover:text-white transition-colors">Annuler</button>
+                <button onclick="saveWeight()"
+                    class="flex-1 py-3 bg-primary hover:bg-primary-dark text-black text-sm font-bold rounded-xl transition-colors shadow-[0_0_20px_rgba(73,230,25,0.3)]">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        let weightChart = null;
+
         document.addEventListener('DOMContentLoaded', () => {
             const clientData = JSON.parse(localStorage.getItem('clientUser') || '{}');
             const responses = JSON.parse(localStorage.getItem('responses') || '{}');
@@ -268,10 +323,8 @@
                 const now = new Date();
                 const daysDiff = Math.floor((now - regDate) / (1000 * 60 * 60 * 24)) + 1;
                 const currentDay = Math.min(Math.max(daysDiff, 1), 7);
-
                 document.getElementById('prog-day').textContent = `Jour ${currentDay} sur 7`;
                 const progress = Math.round((currentDay / 7) * 100);
-
                 setTimeout(() => {
                     document.getElementById('prog-percent').textContent = `${progress}%`;
                     document.getElementById('prog-bar').style.width = `${progress}%`;
@@ -286,7 +339,6 @@
                     reader.onload = (event) => {
                         const base64 = event.target.result;
                         document.getElementById('avatar-img').src = base64;
-                        // Save to local
                         clientData.avatar = base64;
                         localStorage.setItem('clientUser', JSON.stringify(clientData));
                         showFeedback("Photo mise à jour");
@@ -295,19 +347,7 @@
                 }
             });
 
-            // --- Feedback Helper ---
-            function showFeedback(msg) {
-                const overlay = document.getElementById('feedback-overlay');
-                document.getElementById('feedback-msg').textContent = msg;
-                overlay.style.opacity = '1';
-                overlay.style.pointerEvents = 'auto';
-                setTimeout(() => {
-                    overlay.style.opacity = '0';
-                    overlay.style.pointerEvents = 'none';
-                }, 2000);
-            }
-
-            // --- Logout ---
+            // --- Logout & Delete ---
             document.getElementById('logout-btn').addEventListener('click', () => {
                 if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
                     localStorage.removeItem('isClientLoggedIn');
@@ -315,15 +355,195 @@
                     window.location.href = 'index.html';
                 }
             });
-
-            // --- Delete Account ---
             document.getElementById('delete-account-btn').addEventListener('click', () => {
                 if (confirm("ATTENTION : Cette action est irréversible. Toutes vos données seront supprimées. Confirmer ?")) {
                     localStorage.clear();
                     window.location.href = 'index.html';
                 }
             });
+
+            // --- WEIGHT CHART LOGIC ---
+            // Ensure History Exists
+            if (!clientData.weightHistory || !Array.isArray(clientData.weightHistory)) {
+                // Migrate existing single value to history if present
+                if (clientData.weight) {
+                    clientData.weightHistory = [
+                        { date: clientData.registrationDate || new Date().toISOString(), weight: parseFloat(clientData.weight) }
+                    ];
+                } else {
+                    clientData.weightHistory = [];
+                }
+                localStorage.setItem('clientUser', JSON.stringify(clientData));
+            }
+
+            initChart(clientData.weightHistory);
         });
+
+        // --- GLOBAL FUNCTIONS (called by onClick) ---
+
+        function openWeightModal() {
+            const modal = document.getElementById('weight-modal');
+            const content = document.getElementById('weight-modal-content');
+            const input = document.getElementById('weight-input');
+            const currentWeight = document.getElementById('stat-weight').textContent;
+
+            if (currentWeight && currentWeight !== '--') {
+                input.value = currentWeight;
+            }
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeWeightModal() {
+            const modal = document.getElementById('weight-modal');
+            const content = document.getElementById('weight-modal-content');
+
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+            }, 300);
+        }
+
+        function saveWeight() {
+            const input = document.getElementById('weight-input');
+            const val = parseFloat(input.value);
+
+            if (!val || val <= 0 || val > 300) {
+                alert("Veuillez entrer un poids valide.");
+                return;
+            }
+
+            // 1. Update Object
+            const clientData = JSON.parse(localStorage.getItem('clientUser') || '{}');
+            clientData.weight = val;
+
+            if (!clientData.weightHistory) clientData.weightHistory = [];
+
+            // Add new entry
+            clientData.weightHistory.push({
+                date: new Date().toISOString(),
+                weight: val
+            });
+
+            // 2. Save
+            localStorage.setItem('clientUser', JSON.stringify(clientData));
+
+            // 3. Update UI
+            document.getElementById('stat-weight').textContent = val;
+            closeWeightModal();
+            showFeedback("Poids enregistré");
+
+            // 4. Update Chart
+            updateChartRange('ALL'); // Refresh chart
+        }
+
+        function initChart(historyData) {
+            const ctx = document.getElementById('weight-chart').getContext('2d');
+
+            // Prepare Data (Sort by date)
+            const sorted = [...historyData].sort((a, b) => new Date(a.date) - new Date(b.date));
+            const labels = sorted.map(d => new Date(d.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }));
+            const data = sorted.map(d => d.weight);
+
+            // Gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(73, 230, 25, 0.5)'); // Primary
+            gradient.addColorStop(1, 'rgba(73, 230, 25, 0)');
+
+            if (weightChart) weightChart.destroy();
+
+            weightChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Poids (kg)',
+                        data: data,
+                        borderColor: '#49e619',
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#49e619',
+                        pointRadius: 4,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1a1a1a',
+                            titleColor: '#fff',
+                            bodyColor: '#49e619',
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 1,
+                            padding: 10,
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: '#666', font: { family: 'Manrope' } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#666', font: { family: 'Manrope' } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateChartRange(range) {
+            const clientData = JSON.parse(localStorage.getItem('clientUser') || '{}');
+            let history = clientData.weightHistory || [];
+
+            const now = new Date();
+            let filtered = history;
+
+            if (range === '1M') {
+                const limit = new Date();
+                limit.setMonth(now.getMonth() - 1);
+                filtered = history.filter(d => new Date(d.date) >= limit);
+            } else if (range === '3M') {
+                const limit = new Date();
+                limit.setMonth(now.getMonth() - 3);
+                filtered = history.filter(d => new Date(d.date) >= limit);
+            }
+
+            // highlight buttons
+            document.querySelectorAll('.chart-filter').forEach(btn => {
+                if (btn.innerText === range || (range === 'ALL' && btn.innerText === 'TOUT')) {
+                    btn.classList.add('bg-white', 'text-black');
+                    btn.classList.remove('text-gray-400', 'hover:text-white');
+                } else {
+                    btn.classList.remove('bg-white', 'text-black');
+                    btn.classList.add('text-gray-400', 'hover:text-white');
+                }
+            });
+
+            initChart(filtered.length > 0 ? filtered : history);
+        }
+
+        function showFeedback(msg) {
+            const overlay = document.getElementById('feedback-overlay');
+            document.getElementById('feedback-msg').textContent = msg;
+            overlay.style.opacity = '1';
+            overlay.style.pointerEvents = 'auto';
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+                overlay.style.pointerEvents = 'none';
+            }, 2000);
+        }
     </script>
 </body>
 

@@ -13,6 +13,7 @@
     <script src="js/program-logic.js"></script>
     <script src="js/program-selector.js"></script>
     <script src="js/program-db.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -125,18 +126,21 @@
                 </div>
             </div>
 
-            <!-- Progress Card Placeholder -->
-            <div
-                class="bg-white dark:bg-surface-dark p-6 rounded-3xl border border-white/5 flex flex-col items-center justify-center text-center py-10">
-                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                    <span class="material-symbols-outlined text-primary text-3xl">trending_up</span>
+            <!-- Weight Chart Card (Synced) -->
+            <div class="bg-white dark:bg-surface-dark p-6 rounded-3xl border border-white/5 space-y-4">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-slate-900 dark:text-white font-bold">Évolution Poids</h3>
+                    <div class="flex items-center gap-1 bg-gray-100 dark:bg-white/5 rounded-lg p-1">
+                        <span class="text-[10px] font-bold text-primary px-2">7J</span>
+                    </div>
                 </div>
-                <h4 class="text-white font-bold">Suivez vos progrès</h4>
-                <p class="text-gray-400 text-xs px-4 mt-2">Enregistrez vos séances chaque jour pour visualiser votre
-                    évolution sur le long terme.</p>
-                <button
-                    class="mt-4 bg-white/5 hover:bg-white/10 text-white text-xs font-bold px-6 py-2.5 rounded-full border border-white/10 transition-colors">Bientôt
-                    disponible</button>
+                <div class="h-48 w-full relative">
+                    <canvas id="dashboard-weight-chart"></canvas>
+                </div>
+                <button onclick="window.location.href='profile.html'"
+                    class="w-full py-2 text-xs font-bold text-gray-500 hover:text-primary transition-colors">
+                    Mettre à jour mon poids
+                </button>
             </div>
         </main>
 
@@ -164,6 +168,52 @@
         document.addEventListener('DOMContentLoaded', () => {
             const userData = JSON.parse(localStorage.getItem('clientUser') || '{}');
             const responses = JSON.parse(localStorage.getItem('responses') || '{}');
+
+            // --- Weight Chart Logic ---
+            if (userData.weightHistory && userData.weightHistory.length > 0) {
+                const ctx = document.getElementById('dashboard-weight-chart').getContext('2d');
+                const sorted = [...userData.weightHistory].sort((a, b) => new Date(a.date) - new Date(b.date));
+                // Limit to last 7 entries for dashboard mini-view
+                const distinctDates = sorted.slice(-7);
+
+                const labels = distinctDates.map(d => new Date(d.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }));
+                const data = distinctDates.map(d => d.weight);
+
+                const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, 'rgba(73, 230, 25, 0.5)');
+                gradient.addColorStop(1, 'rgba(73, 230, 25, 0)');
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Poids',
+                            data: data,
+                            borderColor: '#49e619',
+                            backgroundColor: gradient,
+                            borderWidth: 3,
+                            pointRadius: 0,
+                            pointHitRadius: 10,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { display: false, min: Math.min(...data) - 2, max: Math.max(...data) + 2 },
+                            x: { display: false }
+                        }
+                    }
+                });
+            } else {
+                // Empty State or Static Line
+                const ctx = document.getElementById('dashboard-weight-chart').getContext('2d');
+                // Render simple empty placeholder chart
+            }
 
             // Trial Logic
             const registrationDate = userData.registrationDate ? new Date(userData.registrationDate) : new Date();
