@@ -79,11 +79,19 @@ const QUESTIONS = [
         type: "single",
         required: true,
         category: "Motivation"
+    },
+    {
+        id: 11,
+        question: "Finalisons votre profil",
+        type: "contact",
+        required: true,
+        category: "Contact"
     }
 ];
 
 let currentStep = 1;
 let responses = {};
+let contactInfo = { name: '', email: '', phone: '' };
 
 // Helper to get URL params
 function getStepFromUrl() {
@@ -93,12 +101,15 @@ function getStepFromUrl() {
 
 // UPDATE UI
 function updateUI() {
-    const progress = (currentStep / QUESTIONS.length) * 100;
+    const totalQuestions = 10;
     const progressBar = document.getElementById('progress-bar');
-    if (progressBar) progressBar.style.width = `${progress}%`;
+    if (progressBar) {
+        const progress = (currentStep / (QUESTIONS.length)) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
 
     const currentStepEl = document.getElementById('current-step');
-    if (currentStepEl) currentStepEl.textContent = currentStep;
+    if (currentStepEl) currentStepEl.textContent = Math.min(currentStep, totalQuestions);
 
     const categoryEl = document.getElementById('step-category');
     if (categoryEl && QUESTIONS[currentStep - 1]) {
@@ -109,139 +120,127 @@ function updateUI() {
 // RENDER QUESTION
 function displayQuestion(step) {
     const container = document.getElementById('question-container');
+    const nextBtn = document.getElementById('next-button');
+    const loader = document.getElementById('loading-overlay');
     if (!container) return;
-    container.innerHTML = '';
 
-    const qIndex = step - 1;
-    if (qIndex >= QUESTIONS.length) {
-        window.location.href = 'final.html';
-        return;
-    }
+    container.style.opacity = '0';
 
-    const q = QUESTIONS[qIndex];
+    setTimeout(() => {
+        container.innerHTML = '';
+        container.classList.add('question-fade-in');
+        container.style.opacity = '1';
 
-    // Title
-    const title = document.createElement('h1');
-    title.className = "text-2xl font-bold text-white mb-2 leading-tight";
-    title.textContent = q.question;
-    container.appendChild(title);
+        const q = QUESTIONS[step - 1];
+        if (!q) {
+            submitData();
+            return;
+        }
 
-    // Subtitle
-    const sub = document.createElement('p');
-    sub.className = "text-gray-400 text-sm mb-6";
-    sub.textContent = q.type === 'multiple' ? "Sélectionnez une ou plusieurs options." : "Choisissez l'option qui vous correspond.";
-    container.appendChild(sub);
+        // Title
+        const title = document.createElement('h1');
+        title.className = "text-3xl font-bold text-white mb-3 leading-tight";
+        title.textContent = q.question;
+        container.appendChild(title);
 
-    // Options Container
-    const optsDiv = document.createElement('div');
-    optsDiv.className = "space-y-3 pb-20";
+        if (q.type !== 'contact') {
+            const sub = document.createElement('p');
+            sub.className = "text-white/40 text-sm mb-10";
+            sub.textContent = q.type === 'multiple' ? "Plusieurs choix possibles." : "Choisissez l'option qui vous correspond le mieux.";
+            container.appendChild(sub);
 
-    const currentResponses = responses[q.id] || (q.type === 'multiple' ? [] : null);
+            const optsDiv = document.createElement('div');
+            optsDiv.className = "space-y-4 pb-20";
 
-    q.options.forEach((optText) => {
-        const btn = document.createElement('button');
-        const isSelected = q.type === 'multiple'
-            ? currentResponses.includes(optText)
-            : currentResponses === optText;
+            const currentResponses = responses[q.id] || (q.type === 'multiple' ? [] : null);
 
-        btn.className = `w-full text-left p-4 rounded-3xl border-2 transition-all group flex items-center justify-between relative overflow-hidden ${isSelected ? 'border-primary bg-primary/10' : 'border-surface-light/10 bg-surface-dark hover:border-primary/50'
-            }`;
+            q.options.forEach((optText) => {
+                const btn = document.createElement('button');
+                const isSelected = q.type === 'multiple' ? currentResponses.includes(optText) : currentResponses === optText;
+                btn.className = `w-full text-left p-6 rounded-2xl border transition-all duration-300 group flex items-center justify-between relative overflow-hidden ${isSelected ? 'border-primary bg-primary/10 shadow-[0_0_20px_rgba(73,230,25,0.15)]' : 'border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20'}`;
+                btn.onclick = () => q.type === 'multiple' ? toggleOption(q.id, optText) : selectOption(q.id, optText);
+                btn.innerHTML = `
+                    <div class="flex items-center gap-5 z-10 transition-transform duration-300 ${isSelected ? 'translate-x-1' : ''}">
+                        <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center transition-all duration-300 ${isSelected ? 'bg-primary border-primary' : 'bg-transparent'}">
+                            <span class="material-symbols-outlined text-sm ${isSelected ? 'text-background-dark font-bold' : 'text-white/20'}">${q.type === 'multiple' ? 'check' : 'circle'}</span>
+                        </div>
+                        <p class="text-white font-medium text-lg leading-none transition-colors duration-300 ${isSelected ? 'text-primary' : ''}">${optText}</p>
+                    </div>
+                `;
+                optsDiv.appendChild(btn);
+            });
+            container.appendChild(optsDiv);
+        } else {
+            const sub = document.createElement('p');
+            sub.className = "text-white/40 text-sm mb-10";
+            sub.textContent = "Dernière étape !";
+            container.appendChild(sub);
+            const formDiv = document.createElement('div');
+            formDiv.className = "space-y-8 pb-20";
+            const fields = [{ id: 'name', label: 'Prénom', type: 'text', placeholder: 'Votre prénom' }, { id: 'email', label: 'Email', type: 'email', placeholder: 'votre@email.com' }, { id: 'phone', label: 'Téléphone', type: 'tel', placeholder: '06 00 00 00 00' }];
+            fields.forEach(f => {
+                const group = document.createElement('div');
+                group.className = "flex flex-col gap-3";
+                group.innerHTML = `<label class="text-white/30 text-xs font-bold uppercase tracking-widest px-1">${f.label}</label>`;
+                const input = document.createElement('input');
+                input.className = "w-full bg-white/[0.03] border-white/5 rounded-xl p-5 text-white focus:bg-white/[0.07] focus:border-white/20 focus:ring-0 transition-all outline-none placeholder:text-white/10";
+                input.type = f.type; input.placeholder = f.placeholder; input.value = contactInfo[f.id] || '';
+                input.oninput = (e) => { contactInfo[f.id] = e.target.value; validateStep(); };
+                group.appendChild(input);
+                formDiv.appendChild(group);
+            });
+            container.appendChild(formDiv);
+        }
 
-        btn.onclick = () => {
-            if (q.type === 'multiple') {
-                toggleOption(q.id, optText);
-            } else {
-                selectOption(q.id, optText);
-            }
-        };
-
-        const content = `
-            <div class="flex items-center gap-4 z-10">
-                <div class="w-10 h-10 rounded-full bg-surface-light/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                    <span class="material-symbols-outlined text-white group-hover:text-primary transition-colors ${isSelected ? 'text-primary' : ''}">${q.type === 'multiple' ? 'check_box' : 'circle'}</span>
-                </div>
-                <div>
-                    <p class="text-white font-bold text-lg group-hover:text-primary transition-colors ${isSelected ? 'text-primary' : ''}">${optText}</p>
-                </div>
-            </div>
-            <div class="w-6 h-6 rounded-full border-2 ${isSelected ? 'border-primary' : 'border-white/20'} group-hover:border-primary flex items-center justify-center">
-                <div class="w-3 h-3 rounded-full bg-primary ${isSelected ? 'opacity-100' : 'opacity-0'} group-hover:opacity-100 transition-opacity"></div>
-            </div>
-        `;
-        btn.innerHTML = content;
-        optsDiv.appendChild(btn);
-    });
-
-    container.appendChild(optsDiv);
-    updateUI();
-    validateStep();
+        updateUI();
+        validateStep();
+        if (loader) loader.classList.add('fade-out');
+        setTimeout(() => container.classList.remove('question-fade-in'), 500);
+    }, 150);
 }
 
 function selectOption(questionId, value) {
     responses[questionId] = value;
     saveResponses();
-    displayQuestion(currentStep);
-
-    // Auto-advance for all questions
-    if (currentStep < QUESTIONS.length) {
-        setTimeout(() => {
-            nextStep();
-        }, 400);
-    }
+    if (currentStep < QUESTIONS.length) setTimeout(() => nextStep(), 400);
 }
 
 function toggleOption(questionId, value) {
     if (!responses[questionId]) responses[questionId] = [];
-
     const index = responses[questionId].indexOf(value);
-    if (index > -1) {
-        responses[questionId].splice(index, 1);
-    } else {
-        // If "Aucune" is selected, clear others. If others selected, clear "Aucune".
-        if (value === "Aucune") {
-            responses[questionId] = ["Aucune"];
-        } else {
+    if (index > -1) responses[questionId].splice(index, 1);
+    else {
+        if (value === "Aucune") responses[questionId] = ["Aucune"];
+        else {
             const noneIndex = responses[questionId].indexOf("Aucune");
             if (noneIndex > -1) responses[questionId].splice(noneIndex, 1);
             responses[questionId].push(value);
         }
     }
     saveResponses();
-    displayQuestion(currentStep);
-
-    // Auto-advance even for multiple choice to maintain fluidity
-    if (currentStep < QUESTIONS.length) {
-        setTimeout(() => {
-            nextStep();
-        }, 600);
-    }
+    validateStep();
 }
 
 function validateStep() {
     const q = QUESTIONS[currentStep - 1];
     const nextBtn = document.getElementById('next-button');
     if (!nextBtn) return;
-
     let isValid = true;
-    if (q.required) {
+    if (q.type === 'contact') isValid = contactInfo.name && contactInfo.email && contactInfo.email.includes('@');
+    else if (q.required) {
         const resp = responses[q.id];
-        if (q.type === 'multiple') {
-            isValid = resp && resp.length > 0;
-        } else {
-            isValid = resp !== undefined && resp !== null && resp !== '';
-        }
+        isValid = q.type === 'multiple' ? (resp && resp.length > 0) : (resp !== undefined && resp !== null && resp !== '');
     }
-
     if (isValid) {
-        nextBtn.classList.remove('opacity-50', 'pointer-events-none');
+        nextBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-2');
+        nextBtn.classList.add('opacity-100', 'translate-y-0');
     } else {
-        nextBtn.classList.add('opacity-50', 'pointer-events-none');
+        nextBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2');
+        nextBtn.classList.remove('opacity-100', 'translate-y-0');
     }
 }
 
-function saveResponses() {
-    localStorage.setItem('responses', JSON.stringify(responses));
-}
+function saveResponses() { localStorage.setItem('responses', JSON.stringify(responses)); }
 
 function nextStep() {
     if (currentStep < QUESTIONS.length) {
@@ -250,9 +249,26 @@ function nextStep() {
         url.searchParams.set('step', currentStep);
         window.history.pushState({}, '', url);
         displayQuestion(currentStep);
-    } else {
-        window.location.href = 'final.html';
-    }
+    } else submitData();
+}
+
+async function submitData() {
+    const container = document.getElementById('question-container');
+    const nextBtn = document.getElementById('next-button');
+    container.innerHTML = `<div class="flex flex-col items-center justify-center py-20 text-center gap-8 question-fade-in"><div class="w-16 h-16 border-2 border-white/10 border-t-white rounded-full animate-spin"></div><div><h2 class="text-2xl font-bold text-white mb-2">Analyse en cours...</h2><p class="text-white/40">Nous préparons votre programme personnalisé.</p></div></div>`;
+    if (nextBtn) nextBtn.style.display = 'none';
+    try {
+        const payload = { responses, name: contactInfo.name, email: contactInfo.email, phone: contactInfo.phone };
+        const response = await fetch('/api/send-program', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const result = await response.json();
+        if (result.success) {
+            localStorage.setItem('lastProgramId', result.programId);
+            localStorage.setItem('userName', contactInfo.name);
+            localStorage.setItem('userEmail', contactInfo.email);
+            container.innerHTML = `<div class="flex flex-col items-center justify-center py-20 text-center gap-8 question-fade-in"><div class="w-16 h-16 bg-white rounded-full flex items-center justify-center"><span class="material-symbols-outlined text-black text-4xl">check</span></div><div><h2 class="text-2xl font-bold text-white mb-2">C'est prêt !</h2><p class="text-white/40">Un email vient de vous être envoyé.<br>Redirection vers votre tableau de bord...</p></div></div>`;
+            setTimeout(() => { window.location.href = 'final.html'; }, 3000);
+        } else throw new Error(result.error);
+    } catch (err) { console.error('Submission failed:', err); alert("Une erreur est survenue lors de l'envoi. Veuillez réessayer."); displayQuestion(currentStep); if (nextBtn) nextBtn.style.display = 'flex'; }
 }
 
 function goBack() {
@@ -262,22 +278,12 @@ function goBack() {
         url.searchParams.set('step', currentStep);
         window.history.pushState({}, '', url);
         displayQuestion(currentStep);
-    } else {
-        window.location.href = 'index.html';
-    }
+    } else window.location.href = 'index.html';
 }
 
-// INIT
 document.addEventListener('DOMContentLoaded', () => {
     const saved = localStorage.getItem('responses');
-    if (saved) {
-        try {
-            responses = JSON.parse(saved);
-        } catch (e) {
-            responses = {};
-        }
-    }
+    if (saved) try { responses = JSON.parse(saved); } catch (e) { responses = {}; }
     currentStep = getStepFromUrl();
     displayQuestion(currentStep);
-    updateUI();
 });

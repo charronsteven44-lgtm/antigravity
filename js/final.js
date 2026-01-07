@@ -31,16 +31,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const email = document.getElementById('email-input').value;
             const name = document.getElementById('name-input').value;
+            const phone = document.getElementById('phone-input').value;
 
             try {
                 // Send data to Render API (CORS enabled)
                 const response = await fetch('/api/send-program', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, name, responses })
+                    body: JSON.stringify({ email, name, phone, responses })
                 });
 
                 if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        localStorage.setItem('lastProgramId', result.programId);
+                        localStorage.setItem('userName', name);
+                        localStorage.setItem('userEmail', email);
+                    }
                     // Show Confirmation Message
                     btn.innerHTML = '✅ Questionnaire validé !';
                     btn.className = "w-full bg-green-500 text-white font-bold py-4 rounded-2xl shadow-lg flex items-center justify-center gap-2";

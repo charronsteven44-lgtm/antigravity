@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html class="dark" lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Détail Exercice - ESSOR ACTIVE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="js/exercises-db.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#49e619", "primary-hover": "#3cd010", "background-dark": "#0a0f08", "surface-dark": "#152111" },
+                    fontFamily: { "display": ["Manrope", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "1.5rem", "2xl": "3rem" }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-[#0a0f08] min-h-screen font-display text-white p-6">
+    <div class="max-w-xl mx-auto space-y-8">
+        <!-- Back Link -->
+        <a href="javascript:handleBack()"
+            class="inline-flex items-center gap-2 text-gray-400 hover:text-primary transition-colors">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <span>Retour au programme</span>
+        </a>
+
+        <!-- Exercise Header -->
+        <div class="space-y-2">
+            <h1 class="text-3xl font-black text-white" id="ex-name">Chargement...</h1>
+            <div class="inline-flex items-center gap-2 bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
+                <span class="material-symbols-outlined text-primary text-sm">bolt</span>
+                <span class="text-primary text-xs font-bold uppercase tracking-widest">Démonstration</span>
+            </div>
+        </div>
+
+        <!-- Video Player -->
+        <div
+            class="aspect-video bg-surface-dark rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative group">
+            <iframe id="ex-video" class="w-full h-full" src="" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-surface-dark p-8 rounded-[2.5rem] border border-white/5 space-y-6 shadow-xl">
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">description</span>
+                    Instructions
+                </h3>
+                <p class="text-gray-400 leading-relaxed" id="ex-instructions"></p>
+            </div>
+
+            <div class="h-px bg-white/5"></div>
+
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold flex items-center gap-2 text-primary">
+                    <span class="material-symbols-outlined">tips_and_updates</span>
+                    Conseils de coach
+                </h3>
+                <p class="text-gray-400 leading-relaxed italic" id="ex-tips"></p>
+            </div>
+        </div>
+
+        <!-- Footer Action -->
+        <button onclick="handleBack()"
+            class="w-full bg-white/5 hover:bg-white/10 text-white font-bold py-5 rounded-full border border-white/10 transition-all active:scale-95">
+            J'AI COMPRIS, CONTINUER
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const exName = urlParams.get('ex');
+
+            // Find exercise using the robust helper
+            const ex = window.findExercise ? window.findExercise(exName) : window.EXERCISES_DB[exName];
+
+            if (!ex) {
+                document.getElementById('ex-name').textContent = exName || "Exercice";
+                document.getElementById('ex-video').parentElement.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full p-8 text-center gap-4">
+                        <span class="material-symbols-outlined text-6xl text-white/10">smart_display</span>
+                        <p class="text-gray-400">Démonstration vidéo non disponible pour cet exercice spécifique.</p>
+                        <p class="text-xs text-primary font-bold uppercase tracking-wider">Référez-vous aux instructions ci-dessous</p>
+                    </div>
+                `;
+                document.getElementById('ex-instructions').textContent = "Concentrez-vous sur la forme et la respiration. Si vous avez un doute, demandez conseil via le chat IA (Premium).";
+                document.getElementById('ex-tips').textContent = "Prenez le temps d'apprendre le mouvement avant d'augmenter l'intensité.";
+                return;
+            }
+
+            document.getElementById('ex-name').textContent = ex.name;
+            document.getElementById('ex-video').src = ex.video;
+            document.getElementById('ex-instructions').textContent = ex.instructions;
+            document.getElementById('ex-tips').textContent = ex.tips;
+        });
+
+        function handleBack() {
+            if (window.history.length > 1 && document.referrer.includes('my-program-pro')) {
+                history.back();
+            } else {
+                window.location.href = 'my-program-pro.html';
+            }
+        }
+    </script>
+</body>
+
+</html>

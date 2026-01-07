@@ -5,23 +5,19 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Mon Profil - ESSOR ACTIVE</title>
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet" />
-    <!-- Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script>
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
-                    colors: { "primary": "#49e619", "primary-dark": "#36b012", "background-dark": "#152111", "surface-dark": "#1e2e19", "surface-light": "#ffffff" },
+                    colors: { "primary": "#49e619", "primary-dark": "#36b012", "background-dark": "#0d140b", "surface-dark": "#1a2617" },
                     fontFamily: { "display": ["Manrope", "sans-serif"] },
-                    borderRadius: { "DEFAULT": "1rem", "lg": "1.5rem", "2xl": "2.5rem", "full": "9999px" },
-                    boxShadow: { 'glow': '0 0 15px rgba(73, 230, 25, 0.3)' }
+                    borderRadius: { "DEFAULT": "1rem", "lg": "1.5rem", "2xl": "2.5rem" }
                 }
             }
         }
@@ -32,120 +28,209 @@
         }
 
         body {
-            min-height: 100vh;
+            background-color: #0d140b;
+        }
+
+        .scroll-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .premium-card {
+            background: linear-gradient(135deg, #1a2617 0%, #0d140b 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
     </style>
 </head>
 
-<body class="bg-gray-100 dark:bg-black font-display flex items-center justify-center min-h-screen p-0 sm:p-4">
-    <div
-        class="relative flex flex-col h-[100dvh] w-full max-w-md bg-[#f6f8f6] dark:bg-background-dark sm:rounded-[3rem] shadow-2xl overflow-hidden ring-8 ring-black/5 dark:ring-white/5">
+<body class="font-display flex items-center justify-center min-h-screen p-0 sm:p-4">
+    <div id="profile-app"
+        class="relative flex flex-col h-[100dvh] w-full max-w-md bg-background-dark sm:rounded-[3rem] shadow-2xl overflow-hidden ring-8 ring-black/5 dark:ring-white/5 transition-all duration-300">
 
         <!-- Header -->
-        <header class="flex items-center justify-between px-6 pt-6 pb-2 z-20">
+        <header class="flex items-center justify-between px-6 pt-6 pb-2 shrink-0 z-10">
             <button onclick="window.history.back()"
-                class="p-2 -ml-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-slate-800 dark:text-white transition-colors">
+                class="p-2 -ml-2 rounded-full hover:bg-white/10 text-white transition-colors">
                 <span class="material-symbols-outlined text-3xl">arrow_back</span>
             </button>
-            <h1 class="text-xl font-bold text-slate-800 dark:text-white">Mon Profil</h1>
+            <h1 class="text-xl font-bold text-white tracking-tight">Mon Profil</h1>
             <div class="w-10"></div>
         </header>
 
-        <!-- Content -->
-        <main class="flex-1 overflow-y-auto px-6 py-6 pb-24 space-y-8">
+        <main class="flex-1 overflow-y-auto px-6 py-6 pb-24 space-y-8 scroll-hide">
 
-            <!-- Avatar Section -->
+            <!-- Avatar & Identity -->
             <div class="flex flex-col items-center">
-                <div class="relative">
-                    <div class="w-28 h-28 rounded-full border-4 border-primary p-1 bg-surface-dark shadow-glow">
+                <div class="relative group">
+                    <div
+                        class="w-32 h-32 rounded-full border-4 border-primary p-1 bg-surface-dark shadow-[0_0_30px_rgba(73,230,25,0.2)]">
                         <div
-                            class="w-full h-full rounded-full bg-slate-200 dark:bg-white/10 flex items-center justify-center overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200"
-                                alt="Avatar" class="w-full h-full object-cover opacity-90">
+                            class="w-full h-full rounded-full bg-white/5 flex items-center justify-center overflow-hidden">
+                            <img id="avatar-img"
+                                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200"
+                                class="w-full h-full object-cover">
                         </div>
                     </div>
+                    <label for="avatar-upload"
+                        class="absolute bottom-0 right-0 p-2.5 bg-primary rounded-full text-black shadow-lg cursor-pointer hover:scale-110 active:scale-95 transition-all">
+                        <span class="material-symbols-outlined text-[20px] font-bold">photo_camera</span>
+                        <input type="file" id="avatar-upload" class="hidden" accept="image/*">
+                    </label>
+                </div>
+                <div class="text-center mt-5">
+                    <h2 class="text-2xl font-black text-white" id="user-display-name">Chargement...</h2>
+                    <p class="text-primary font-bold text-[10px] uppercase tracking-widest mt-1" id="user-status">Membre
+                        Premium</p>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="premium-card p-5 rounded-3xl flex flex-col gap-1">
+                    <span class="text-gray-500 text-[10px] font-bold uppercase tracking-wider">Poids actuel</span>
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-2xl font-black text-white" id="stat-weight">--</span>
+                        <span class="text-gray-400 text-xs font-bold" id="unit-weight">kg</span>
+                    </div>
+                </div>
+                <div class="premium-card p-5 rounded-3xl flex flex-col gap-1">
+                    <span class="text-gray-500 text-[10px] font-bold uppercase tracking-wider">Taille</span>
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-2xl font-black text-white" id="stat-height">--</span>
+                        <span class="text-gray-400 text-xs font-bold" id="unit-height">cm</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Program Brief Card -->
+            <div class="premium-card p-6 rounded-3xl space-y-4">
+                <div class="flex justify-between items-center">
+                    <div class="space-y-0.5">
+                        <h3 class="text-white font-bold" id="prog-title">Programme Essor</h3>
+                        <p class="text-gray-500 text-[10px] font-bold uppercase tracking-wider" id="prog-day">Jour 1 sur
+                            7</p>
+                    </div>
+                    <div class="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined">fitness_center</span>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="flex justify-between text-[11px] font-bold text-gray-400">
+                        <span>Progression</span>
+                        <span id="prog-percent">0%</span>
+                    </div>
+                    <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                        <div id="prog-bar" class="bg-primary h-full rounded-full transition-all duration-1000"
+                            style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <button onclick="window.location.href='my-program-pro.html'"
+                    class="w-full py-3 bg-white/5 hover:bg-white/10 text-white text-xs font-bold rounded-xl border border-white/5 transition-colors">
+                    VOIR MA SÉANCE DU JOUR
+                </button>
+            </div>
+
+            <!-- Personal Info List -->
+            <div class="space-y-4">
+                <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest pl-1">Informations</p>
+                <div class="premium-card rounded-3xl overflow-hidden divide-y divide-white/[0.03]">
+                    <div class="flex items-center justify-between p-5">
+                        <div class="flex items-center gap-4">
+                            <span class="material-symbols-outlined text-gray-500">cake</span>
+                            <span class="text-sm font-medium text-gray-300">Âge</span>
+                        </div>
+                        <span class="text-sm font-bold text-white" id="val-age">--</span>
+                    </div>
+                    <div class="flex items-center justify-between p-5">
+                        <div class="flex items-center gap-4">
+                            <span class="material-symbols-outlined text-gray-500">transgender</span>
+                            <span class="text-sm font-medium text-gray-300">Genre</span>
+                        </div>
+                        <span class="text-sm font-bold text-white" id="val-gender">--</span>
+                    </div>
+                    <div class="flex items-center justify-between p-5">
+                        <div class="flex items-center gap-4">
+                            <span class="material-symbols-outlined text-gray-500">mail</span>
+                            <span class="text-sm font-medium text-gray-300">Email</span>
+                        </div>
+                        <span class="text-sm font-bold text-white truncate max-w-[150px]" id="val-email">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings & Management -->
+            <div class="space-y-4">
+                <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest pl-1">Configuration</p>
+                <div class="premium-card rounded-3xl overflow-hidden divide-y divide-white/[0.03]">
+                    <button onclick="window.location.href='edit-profile.html'"
+                        class="w-full flex items-center justify-between p-5 hover:bg-white/[0.02] transition-colors">
+                        <div class="flex items-center gap-4">
+                            <span class="material-symbols-outlined text-primary">edit_square</span>
+                            <span class="text-sm font-bold text-white">Modifier mon profil</span>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-600">chevron_right</span>
+                    </button>
                     <button
-                        class="absolute bottom-0 right-0 p-2 bg-primary rounded-full text-black shadow-lg hover:scale-105 transition-transform">
-                        <span class="material-symbols-outlined text-[20px]">edit</span>
+                        class="w-full flex items-center justify-between p-5 hover:bg-white/[0.02] transition-colors">
+                        <div class="flex items-center gap-4">
+                            <span class="material-symbols-outlined text-gray-500">notifications</span>
+                            <span class="text-sm font-bold text-white">Notifications</span>
+                        </div>
+                        <div class="bg-white/5 px-2 py-0.5 rounded text-[10px] font-bold text-primary">ACTIF</div>
+                    </button>
+                    <button id="logout-btn"
+                        class="w-full flex items-center justify-between p-5 hover:bg-red-500/5 transition-colors group">
+                        <div class="flex items-center gap-4">
+                            <span
+                                class="material-symbols-outlined text-red-500/60 group-hover:text-red-500">logout</span>
+                            <span class="text-sm font-bold text-red-500/80 group-hover:text-red-500">Se
+                                déconnecter</span>
+                        </div>
                     </button>
                 </div>
-                <h2 class="mt-4 text-2xl font-bold text-slate-900 dark:text-white" id="profile-name">Utilisateur</h2>
-                <p class="text-primary font-medium text-sm">Membre Premium</p>
             </div>
 
-            <!-- Stats/Info Cards -->
-            <div class="grid grid-cols-2 gap-4">
-                <div
-                    class="bg-white dark:bg-surface-dark p-5 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
-                    <p class="text-xs text-gray-500 uppercase tracking-wide font-bold mb-1">Objectif</p>
-                    <p class="text-slate-900 dark:text-white font-bold text-lg truncate" id="profile-goal">Non défini
-                    </p>
-                </div>
-                <div
-                    class="bg-white dark:bg-surface-dark p-5 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
-                    <p class="text-xs text-gray-500 uppercase tracking-wide font-bold mb-1">Fréquence</p>
-                    <p class="text-slate-900 dark:text-white font-bold text-lg" id="profile-freq">3x / sem</p>
-                </div>
-            </div>
-
-            <!-- Settings List -->
-            <div class="space-y-3">
-                <p class="text-sm font-bold text-gray-400 uppercase tracking-wider pl-1">Paramètres</p>
-
-                <button onclick="window.location.href='edit-profile.html'"
-                    class="w-full flex items-center justify-between p-4 bg-white dark:bg-surface-dark rounded-2xl border border-slate-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                            <span class="material-symbols-outlined">person</span>
-                        </div>
-                        <span class="text-slate-900 dark:text-white font-bold">Informations personnelles</span>
-                    </div>
-                    <span class="material-symbols-outlined text-gray-400 group-hover:text-primary">chevron_right</span>
+            <!-- Danger Zone -->
+            <div class="pt-4 pb-8">
+                <button id="delete-account-btn"
+                    class="w-full py-4 text-xs font-bold text-gray-600 hover:text-red-500/50 transition-colors uppercase tracking-widest">
+                    Supprimer mon compte
                 </button>
-
-                <button
-                    class="w-full flex items-center justify-between p-4 bg-white dark:bg-surface-dark rounded-2xl border border-slate-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                            <span class="material-symbols-outlined">notifications</span>
-                        </div>
-                        <span class="text-slate-900 dark:text-white font-bold">Notifications</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-xs font-bold bg-primary text-black px-2 py-0.5 rounded">ON</span>
-                        <span
-                            class="material-symbols-outlined text-gray-400 group-hover:text-primary">chevron_right</span>
-                    </div>
-                </button>
-
-                <button
-                    class="w-full flex items-center justify-between p-4 bg-white dark:bg-surface-dark rounded-2xl border border-slate-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-500">
-                            <span class="material-symbols-outlined">logout</span>
-                        </div>
-                        <span class="text-red-500 font-bold">Déconnexion</span>
-                    </div>
-                </button>
-
             </div>
 
         </main>
 
-        <!-- Bottom Nav (Shared) -->
+        <!-- Dynamic Feedback Overlay (for instant feedback) -->
+        <div id="feedback-overlay"
+            class="fixed inset-0 bg-black/80 flex flex-col items-center justify-center z-50 opacity-0 pointer-events-none transition-opacity duration-300">
+            <div class="bg-primary/10 border border-primary/20 p-8 rounded-[2rem] flex flex-col items-center gap-6">
+                <span class="material-symbols-outlined text-primary text-5xl animate-bounce">check_circle</span>
+                <p id="feedback-msg" class="text-white font-bold text-center">Modifications enregistrées</p>
+            </div>
+        </div>
+
+        <!-- Bottom Nav -->
         <nav
-            class="absolute bottom-0 left-0 w-full z-50 bg-[#f6f8f6]/95 dark:bg-[#131811]/95 backdrop-blur-lg border-t border-slate-200 dark:border-[#2c3829] pb-6 pt-2">
+            class="absolute bottom-0 left-0 w-full z-50 bg-background-dark/80 backdrop-blur-xl border-t border-white/5 pb-6 pt-2">
             <div class="flex justify-around items-center px-2">
                 <a href="client-dashboard.html"
                     class="flex flex-col items-center justify-center gap-1 min-w-[64px] group opacity-60 hover:opacity-100 transition-opacity">
                     <span
-                        class="material-symbols-outlined text-[28px] text-slate-800 dark:text-white group-hover:text-primary">home</span>
+                        class="material-symbols-outlined text-[28px] text-white group-hover:text-primary">analytics</span>
                     <span
-                        class="text-[10px] font-medium text-slate-800 dark:text-white group-hover:text-primary">Accueil</span>
+                        class="text-[10px] font-medium text-white group-hover:text-primary tracking-tight">Tableau</span>
                 </a>
-                <a href="#" class="flex flex-col items-center justify-center gap-1 min-w-[64px] group">
-                    <span class="material-symbols-outlined text-[28px] text-primary">person</span>
-                    <span class="text-[10px] font-medium text-primary">Profil</span>
+                <a href="my-program-pro.html"
+                    class="flex flex-col items-center justify-center gap-1 min-w-[64px] group opacity-60 hover:opacity-100 transition-opacity">
+                    <span
+                        class="material-symbols-outlined text-[28px] text-white group-hover:text-primary">calendar_today</span>
+                    <span
+                        class="text-[10px] font-medium text-white group-hover:text-primary tracking-tight">Programme</span>
+                </a>
+                <a href="profile.html" class="flex flex-col items-center justify-center gap-1 min-w-[64px] group">
+                    <span class="material-symbols-outlined text-[28px] text-primary">person_fill</span>
+                    <span class="text-[10px] font-medium text-primary tracking-tight">Profil</span>
                 </a>
             </div>
         </nav>
@@ -155,20 +240,88 @@
         document.addEventListener('DOMContentLoaded', () => {
             const clientData = JSON.parse(localStorage.getItem('clientUser') || '{}');
             const responses = JSON.parse(localStorage.getItem('responses') || '{}');
+            const program = JSON.parse(localStorage.getItem('userProgram') || '{}');
 
-            if (clientData.name) {
-                document.getElementById('profile-name').textContent = clientData.name;
+            // --- Fill Identity ---
+            document.getElementById('user-display-name').textContent = clientData.name || "Utilisateur";
+            document.getElementById('val-email').textContent = clientData.email || "--";
+
+            // Avatar persistence
+            if (clientData.avatar) {
+                document.getElementById('avatar-img').src = clientData.avatar;
             }
 
-            document.getElementById('profile-goal').textContent = responses[5] || "Non défini";
-            document.getElementById('profile-freq').textContent = responses[7] || "3x / sem";
+            // --- Stats ---
+            document.getElementById('stat-weight').textContent = clientData.weight || "--";
+            document.getElementById('unit-weight').textContent = clientData.weightUnit || "kg";
+            document.getElementById('stat-height').textContent = clientData.height || "--";
+            document.getElementById('unit-height').textContent = clientData.heightUnit || "cm";
 
-            // Logout Logic
-            const logoutBtn = document.querySelector('button .text-red-500').parentElement;
-            logoutBtn.addEventListener('click', () => {
-                localStorage.removeItem('isClientLoggedIn');
-                localStorage.removeItem('clientUser');
-                window.location.href = 'index.html';
+            // --- Personal Info ---
+            document.getElementById('val-age').textContent = clientData.age ? `${clientData.age} ans` : "--";
+            document.getElementById('val-gender').textContent = clientData.gender || "--";
+
+            // --- Program Status ---
+            if (program && program.title) {
+                document.getElementById('prog-title').textContent = program.title;
+                const regDate = clientData.registrationDate ? new Date(clientData.registrationDate) : new Date();
+                const now = new Date();
+                const daysDiff = Math.floor((now - regDate) / (1000 * 60 * 60 * 24)) + 1;
+                const currentDay = Math.min(Math.max(daysDiff, 1), 7);
+
+                document.getElementById('prog-day').textContent = `Jour ${currentDay} sur 7`;
+                const progress = Math.round((currentDay / 7) * 100);
+
+                setTimeout(() => {
+                    document.getElementById('prog-percent').textContent = `${progress}%`;
+                    document.getElementById('prog-bar').style.width = `${progress}%`;
+                }, 300);
+            }
+
+            // --- Avatar Upload Simulation ---
+            document.getElementById('avatar-upload').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const base64 = event.target.result;
+                        document.getElementById('avatar-img').src = base64;
+                        // Save to local
+                        clientData.avatar = base64;
+                        localStorage.setItem('clientUser', JSON.stringify(clientData));
+                        showFeedback("Photo mise à jour");
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // --- Feedback Helper ---
+            function showFeedback(msg) {
+                const overlay = document.getElementById('feedback-overlay');
+                document.getElementById('feedback-msg').textContent = msg;
+                overlay.style.opacity = '1';
+                overlay.style.pointerEvents = 'auto';
+                setTimeout(() => {
+                    overlay.style.opacity = '0';
+                    overlay.style.pointerEvents = 'none';
+                }, 2000);
+            }
+
+            // --- Logout ---
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
+                    localStorage.removeItem('isClientLoggedIn');
+                    localStorage.removeItem('clientUser');
+                    window.location.href = 'index.html';
+                }
+            });
+
+            // --- Delete Account ---
+            document.getElementById('delete-account-btn').addEventListener('click', () => {
+                if (confirm("ATTENTION : Cette action est irréversible. Toutes vos données seront supprimées. Confirmer ?")) {
+                    localStorage.clear();
+                    window.location.href = 'index.html';
+                }
             });
         });
     </script>

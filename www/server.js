@@ -57,10 +57,10 @@ function generateEmailHTML(userData, program, link) {
     let template = fs.readFileSync(path.join(__dirname, 'email-template.html'), 'utf8');
 
     // Construction du tableau de planning
-    const { findExercise } = require('./js/exercises-db');
+    const exerciseDb = require('./js/exercises-db');
 
     const scheduleRows = program.schedule.map(s => {
-        const exerciseInfo = findExercise(s.activity);
+        const exerciseInfo = exerciseDb[s.activity] || null;
         const thumbnailHtml = exerciseInfo ?
             `<div style="margin-bottom: 10px;">
                 <img src="${exerciseInfo.thumbnail}" alt="${s.activity}" style="width: 100%; max-width: 200px; border-radius: 10px; border: 1px solid #49e619;">
@@ -210,26 +210,6 @@ async function handleClientLogin(req, res) {
     }
 }
 
-async function handleClientUpdate(req, res) {
-    try {
-        const data = await parsePostBody(req);
-        if (!data.email) throw new Error("Email requis pour mise à jour.");
-
-        const existing = getClient(data.email);
-        if (!existing) throw new Error("Utilisateur non trouvé.");
-
-        // Merge and save
-        const updated = { ...existing, ...data };
-        saveClient(updated);
-
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ success: true, message: "Profil mis à jour", user: updated }));
-    } catch (err) {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ success: false, error: err.message }));
-    }
-}
-
 const server = http.createServer(async (req, res) => {
     // Handle OPTIONS (Preflight)
     if (req.method === 'OPTIONS') {
@@ -251,9 +231,6 @@ const server = http.createServer(async (req, res) => {
     }
     if (req.url === '/api/client/login' && req.method === 'POST') {
         return handleClientLogin(req, res);
-    }
-    if (req.url === '/api/client/update' && req.method === 'POST') {
-        return handleClientUpdate(req, res);
     }
     if (req.url === '/api/health' && req.method === 'GET') {
         res.writeHead(200, { 'Content-Type': 'application/json' });

@@ -60,6 +60,23 @@
 
         <main class="flex-1 overflow-y-auto px-6 py-4 pb-24 space-y-6">
 
+            <!-- Trial Banner -->
+            <div id="trial-banner" class="hidden">
+                <div class="bg-primary/10 border border-primary/20 rounded-2xl p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary">timer</span>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-primary uppercase tracking-wider">Période d'essai</p>
+                            <p class="text-xs text-white" id="trial-message">Chargement...</p>
+                        </div>
+                    </div>
+                    <button onclick="window.location.href='subscription.html'"
+                        class="bg-primary text-background-dark text-[10px] font-bold px-4 py-2 rounded-full shadow-neon">S'ABONNER</button>
+                </div>
+            </div>
+
             <!-- Quick Stats -->
             <div class="grid grid-cols-2 gap-4">
                 <div class="bg-white dark:bg-surface-dark p-4 rounded-3xl border border-white/5 shadow-sm">
@@ -147,6 +164,20 @@
         document.addEventListener('DOMContentLoaded', () => {
             const userData = JSON.parse(localStorage.getItem('clientUser') || '{}');
             const responses = JSON.parse(localStorage.getItem('responses') || '{}');
+
+            // Trial Logic
+            const registrationDate = userData.registrationDate ? new Date(userData.registrationDate) : new Date();
+            const now = new Date();
+            const daysSinceReg = Math.floor((now - registrationDate) / (1000 * 60 * 60 * 24));
+            const isTrialActive = daysSinceReg < 7;
+
+            if (isTrialActive) {
+                const daysLeft = 7 - daysSinceReg;
+                document.getElementById('trial-banner').classList.remove('hidden');
+                document.getElementById('trial-message').textContent = `Il vous reste ${daysLeft} jour(s) de programme personnalisé gratuit.`;
+            } else {
+                document.getElementById('trial-banner').classList.add('hidden');
+            }
 
             if (userData.name) {
                 document.getElementById('welcome-name').textContent = `Bonjour ${userData.name} !`;

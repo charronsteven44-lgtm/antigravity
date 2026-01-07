@@ -99,7 +99,7 @@
 
                 if (res.ok) {
                     const result = await res.json();
-                    localStorage.setItem('clientUser', JSON.stringify({ name: result.name, email: result.email }));
+                    localStorage.setItem('clientUser', JSON.stringify(result.user || { name: result.name, email: result.email }));
                     localStorage.setItem('isClientLoggedIn', 'true');
                     window.location.href = 'client-dashboard.html';
                 } else {

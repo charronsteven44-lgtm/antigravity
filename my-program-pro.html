@@ -138,27 +138,47 @@
         </div>
     </div>
 
+    <script src="js/exercises-db.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             const params = new URLSearchParams(window.location.search);
             const programId = params.get('id');
+            const exDeepLink = params.get('ex');
+
+            // --- DEEP LINK HANDLING ---
+            if (exDeepLink) {
+                // If we have an exercise in URL, redirect directly to detail
+                window.location.href = `exercise-detail.html?ex=${encodeURIComponent(exDeepLink)}`;
+                return;
+            }
+
             let program = null;
+
+            // Load User Data for Trial Check
+            const clientUser = JSON.parse(localStorage.getItem('clientUser') || '{}');
+            const registrationDate = clientUser.registrationDate ? new Date(clientUser.registrationDate) : new Date();
+            const now = new Date();
+            const daysSinceReg = Math.floor((now - registrationDate) / (1000 * 60 * 60 * 24));
+            const isTrialActive = daysSinceReg < 7;
 
             if (programId) {
                 try {
-                    // Try fetching from local API
-                    const response = await fetch(`/api/get-program?id=${programId}`);
+                    // Fetch with Timeout (5s)
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+                    const response = await fetch(`/api/get-program?id=${programId}`, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+
                     if (response.ok) {
                         program = await response.json();
-                        // Save for offline use
                         WorkoutLogic.saveToLocal(program);
                     }
                 } catch (e) {
-                    console.warn('API fetch failed, falling back to local');
+                    console.warn('Program fetch failed or timed out', e);
                 }
             }
 
-            // Fallback to Local Storage if API fail or no ID
             if (!program) {
                 program = WorkoutLogic.loadFromLocal();
             }
@@ -170,20 +190,44 @@
 
             document.getElementById('program-title-header').textContent = program.title;
             document.getElementById('program-headline').textContent = program.title;
-            document.getElementById('program-subtitle').textContent = "Voici votre plan d'action personnalisé.";
+
+            if (isTrialActive) {
+                const daysLeft = 7 - daysSinceReg;
+                document.getElementById('program-subtitle').innerHTML = `<span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-xs font-bold mr-2">ESSAI ACTIF</span> Il vous reste ${daysLeft} jours d'accès gratuit.`;
+            } else {
+                document.getElementById('program-subtitle').textContent = "Voici votre plan d'action personnalisé.";
+            }
 
             const container = document.getElementById('dynamic-schedule');
 
-            // Show Paywall Footer if not premium (Simplified for MVP)
-            if (!program.isPremium) {
+            // Show Paywall Footer only if trial expired AND not premium
+            if (!program.isPremium && !isTrialActive) {
                 document.getElementById('paywall-footer').classList.remove('hidden');
             }
 
             program.schedule.forEach((day, index) => {
-                const isLocked = !program.isPremium && index > 0;
+                const isLocked = !program.isPremium && !isTrialActive && index > 0;
 
-                // Active/Unlocked Card
+                // Better matching using findExercise helper
+                const exerciseInfo = window.findExercise ? window.findExercise(day.activity) : window.EXERCISES_DB[day.activity];
+
                 if (!isLocked) {
+                    // Show media if found, otherwise show "Instruction" card
+                    const mediaHtml = exerciseInfo ? `
+                        <div class="mt-4 flex items-center gap-3 bg-primary/5 p-3 rounded-xl border border-primary/10 cursor-pointer hover:bg-primary/10 transition-colors" onclick="window.location.href='exercise-detail.html?ex=${encodeURIComponent(day.activity)}'">
+                            <img src="${exerciseInfo.thumbnail}" class="w-16 h-12 object-cover rounded-lg">
+                            <div class="flex-1">
+                                <p class="text-xs font-bold text-primary uppercase">Démonstration</p>
+                                <p class="text-white text-sm font-medium">Voir la vidéo & instructions</p>
+                            </div>
+                            <span class="material-symbols-outlined text-primary">play_circle</span>
+                        </div>
+                    ` : `
+                        <div class="mt-4 p-4 rounded-xl bg-white/5 border border-white/10 italic text-gray-400 text-xs">
+                            Suivez les instructions textuelles ci-dessus pour cet exercice.
+                        </div>
+                    `;
+
                     const html = `
                 <div class="relative bg-white dark:bg-surface-dark rounded-xl p-0 overflow-hidden shadow-lg border border-slate-200 dark:border-white/5 mb-6">
                     <div class="p-5 pb-0">
@@ -195,21 +239,21 @@
                     </div>
                     <div class="p-5 pt-0">
                         <div class="bg-slate-50 dark:bg-[#1a2416] p-4 rounded-lg mt-2 text-sm text-gray-300">
-                            ${day.details}
+                            ${day.details || "Consultez la vidéo pour les détails de l'exercice."}
                         </div>
+                        ${mediaHtml}
                     </div>
                 </div>`;
                     container.insertAdjacentHTML('beforeend', html);
                 } else {
-                    // Locked Card
                     const html = `
-                <div class="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-white/5 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer group mb-3" onclick="window.location.href='/subscription.html'">
+                <div class="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-white/5 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer group mb-3" onclick="window.location.href='subscription.html'">
                     <div class="flex shrink-0 size-12 items-center justify-center rounded-full bg-slate-100 dark:bg-[#2c3829] group-hover:bg-primary/20 transition-colors">
                         <span class="text-slate-500 dark:text-white text-sm font-bold group-hover:text-primary">J${index + 1}</span>
                     </div>
                     <div class="flex flex-col flex-1">
                         <p class="text-slate-900 dark:text-white text-base font-bold leading-normal">${day.day}</p>
-                        <p class="text-slate-500 dark:text-[#a4b89d] text-sm font-normal leading-normal">Contenu Premium</p>
+                        <p class="text-slate-500 dark:text-[#a4b89d] text-sm font-normal leading-normal">Contenu Premium (Essai terminé)</p>
                     </div>
                     <span class="material-symbols-outlined text-slate-400 dark:text-gray-500 text-[20px]">lock</span>
                 </div>`;

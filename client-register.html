@@ -86,6 +86,13 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const name = localStorage.getItem('userName');
+            const email = localStorage.getItem('userEmail');
+            if (name) document.getElementById('name').value = name;
+            if (email) document.getElementById('email').value = email;
+        });
+
         document.getElementById('register-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = e.target.querySelector('button');
@@ -112,7 +119,7 @@
 
                 if (res.ok) {
                     const result = await res.json();
-                    localStorage.setItem('clientUser', JSON.stringify({ name: data.name, email: data.email }));
+                    localStorage.setItem('clientUser', JSON.stringify(result.user));
                     localStorage.setItem('isClientLoggedIn', 'true');
                     window.location.href = 'client-dashboard.html';
                 } else {
