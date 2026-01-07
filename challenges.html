@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Challenges & Récompenses - ESSOR ACTIVE</title>
+    <title>Challenges - ESSOR ACTIVE</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
@@ -15,8 +15,12 @@
             darkMode: "class",
             theme: {
                 extend: {
-                    colors: { "primary": "#49e619", "background-dark": "#050505", "surface-dark": "#121212" },
-                    fontFamily: { "display": ["Manrope", "sans-serif"] }
+                    colors: {
+                        "primary": "#49e619",
+                        "background-dark": "#050505",
+                        "surface-dark": "#121212"
+                    },
+                    fontFamily: { "display": ["Manrope", "sans-serif"] },
                 }
             }
         }
@@ -26,139 +30,176 @@
             font-variation-settings: 'FILL' 1;
         }
 
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
+        .blur-lock {
+            filter: blur(3px) grayscale(100%);
+            opacity: 0.4;
+            pointer-events: none;
         }
     </style>
 </head>
 
-<body class="bg-background-dark text-white font-display min-h-screen flex flex-col p-0 sm:p-4 items-center">
+<body class="bg-background-dark text-white font-display min-h-screen pb-24 select-none">
 
-    <div
-        class="w-full max-w-md bg-[#0F0F0F] sm:rounded-[2.5rem] shadow-2xl min-h-[100dvh] flex flex-col relative overflow-hidden">
-
-        <!-- Header / Level Card -->
-        <header class="p-6 pb-12 bg-gradient-to-b from-[#1a2617] to-transparent relative z-10">
-            <button onclick="window.history.back()"
-                class="absolute top-6 left-6 p-2 rounded-full bg-black/20 text-white">
+    <!-- Header -->
+    <header
+        class="fixed top-0 w-full z-20 bg-background-dark/80 backdrop-blur-xl border-b border-white/5 pt-6 pb-4 px-6">
+        <div class="flex items-center gap-4">
+            <button onclick="window.location.href='dashboard.html'"
+                class="p-2 rounded-full bg-white/5 border border-white/5 text-white hover:bg-white/10 transition-colors">
                 <span class="material-symbols-outlined">arrow_back</span>
             </button>
-
-            <div class="mt-8 flex flex-col items-center">
-                <!-- Circular Progress with Level -->
-                <div class="relative w-32 h-32 flex items-center justify-center mb-4">
-                    <!-- SVG Circle BG -->
-                    <svg class="w-full h-full transform -rotate-90">
-                        <circle cx="64" cy="64" r="60" stroke="#333" stroke-width="8" fill="transparent" />
-                        <circle id="xp-circle" cx="64" cy="64" r="60" stroke="#49e619" stroke-width="8"
-                            fill="transparent" stroke-dasharray="377" stroke-dashoffset="100" stroke-linecap="round"
-                            class="transition-all duration-1000" />
-                    </svg>
-                    <div class="absolute flex flex-col items-center">
-                        <span class="text-xs text-gray-400 font-bold uppercase">Niveau</span>
-                        <span class="text-4xl font-black text-white" id="lvl-display">1</span>
-                    </div>
-                </div>
-
-                <p class="text-sm font-bold text-gray-400 uppercase tracking-widest"><span id="xp-display">0</span> XP
-                    Totaux</p>
-                <p class="text-xs text-primary mt-1 font-medium">Prochain niveau : <span id="next-xp">100</span> XP</p>
-            </div>
-        </header>
-
-        <!-- Challenges List -->
-        <main class="flex-1 -mt-6 px-6 pb-24 space-y-6 bg-[#0F0F0F] rounded-t-[2rem] z-20 pt-6">
-
-            <!-- Filters (Fake) -->
-            <div class="flex gap-2 overflow-x-auto hide-scrollbar">
-                <button
-                    class="px-4 py-1.5 bg-primary text-black font-bold text-xs rounded-full whitespace-nowrap">Tout</button>
-                <button class="px-4 py-1.5 bg-white/5 text-gray-400 font-bold text-xs rounded-full whitespace-nowrap">En
-                    Cours</button>
-                <button
-                    class="px-4 py-1.5 bg-white/5 text-gray-400 font-bold text-xs rounded-full whitespace-nowrap">Terminés</button>
-            </div>
-
-            <div id="challenges-container" class="space-y-3">
-                <!-- JS will inject items here -->
-            </div>
-
-        </main>
-    </div>
-
-    <!-- Scripts -->
-    <script src="js/gamification-data.js"></script>
-    <script src="js/gamification-logic.js"></script>
-    <script>
-        document.addEventListener('gamification-updated', (e) => {
-            renderPage(e.detail);
-        });
-
-        // Initial render trigger (logic runs on load)
-
-        function renderPage(state) {
-            // Stats
-            document.getElementById('lvl-display').textContent = state.level;
-            document.getElementById('xp-display').textContent = state.xp;
-
-            const nextLvlXp = GameLogic.getNextLevelXP();
-            // Logic to find prev threshold
-            let prevThreshold = 0;
-            // Simple approach: get current level index logic
-            // ... for MVP UI simple bar calc:
-            const totalRange = nextLvlXp;
-            // Better: offset from previous level base
-
-            document.getElementById('next-xp').textContent = nextLvlXp;
-
-            // Render List
-            const container = document.getElementById('challenges-container');
-            container.innerHTML = '';
-
-            // Sort: Incomplete first, then Completed
-            const sorted = [...CHALLENGES_DB].sort((a, b) => {
-                const aDone = state.completed.includes(a.id);
-                const bDone = state.completed.includes(b.id);
-                return aDone === bDone ? 0 : aDone ? 1 : -1;
-            });
-
-            sorted.forEach(c => {
-                const isDone = state.completed.includes(c.id);
-                const isHidden = c.type === 'hidden' && !isDone;
-
-                let icon = 'military_tech';
-                if (c.category === 'fun') icon = 'celebration';
-                if (c.category === 'social') icon = 'share';
-                if (c.category === 'start') icon = 'flag';
-                if (isHidden) icon = 'lock';
-
-                const html = `
-                <div class="relative bg-white/5 border ${isDone ? 'border-primary/30' : 'border-white/5'} rounded-2xl p-4 flex items-center gap-4 group overflow-hidden">
-                    ${isDone ? '<div class="absolute inset-0 bg-primary/5 pointer-events-none"></div>' : ''}
-                    
-                    <div class="w-12 h-12 rounded-full ${isDone ? 'bg-primary text-black' : 'bg-white/10 text-gray-500'} flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined">${isDone ? 'check' : icon}</span>
-                    </div>
-                    
-                    <div class="flex-1 min-w-0">
-                        <h3 class="text-sm font-bold text-white truncate">${isHidden ? 'Challenge Caché' : c.title}</h3>
-                        <p class="text-xs text-gray-400 truncate">${isHidden ? '???' : c.desc}</p>
-                        
-                        <div class="flex items-center gap-2 mt-2">
-                            <span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">+${c.xp} XP</span>
-                            ${c.reward !== 'Points' ? `<span class="text-[10px] font-bold text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">card_giftcard</span> ${isDone ? 'Récupéré' : 'À gagner'}</span>` : ''}
+            <div>
+                <h1 class="text-2xl font-black uppercase tracking-tight italic">Challenges</h1>
+                <div class="flex items-center gap-2 mt-1">
+                    <div id="header-lvl-badge" class="px-2 py-0.5 rounded bg-primary text-black text-[10px] font-bold">
+                        LVL 1</div>
+                    <div class="h-1.5 w-24 bg-gray-800 rounded-full overflow-hidden">
+                        <div id="header-xp-bar" class="h-full bg-primary transition-all duration-500" style="width: 0%">
                         </div>
                     </div>
                 </div>
-                `;
-                container.innerHTML += html;
-            });
+            </div>
+        </div>
+    </header>
 
-            // Circle Progress update (simple visual approx for MVP)
-            const pct = Math.min((state.xp / nextLvlXp) * 377, 377);
-            // Note: Real formula needs range between levels.
-            // For Level 1 (0-100), xp=50 -> 50%.
-            document.getElementById('xp-circle').style.strokeDashoffset = 377 - pct;
+    <!-- Main Content -->
+    <main class="pt-28 px-6 space-y-8" id="challenge-container">
+        <!-- Sections will be injected here -->
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/gamification-data.js"></script>
+    <script src="js/gamification-logic.js"></script> <!-- Defines 'game' instance -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderUI();
+            window.addEventListener('update-gamification', renderUI);
+        });
+
+        function renderUI() {
+            const container = document.getElementById('challenge-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            // Update Header
+            const levelBadge = document.getElementById('header-lvl-badge');
+            const xpBar = document.getElementById('header-xp-bar');
+
+            levelBadge.textContent = `LVL ${game.state.level}`;
+            const currentLevelBase = LEVEL_THRESHOLDS[game.state.level - 1] || 0;
+            const nextLevelTarget = LEVEL_THRESHOLDS[game.state.level] || 100000;
+            const currentXP = game.state.xp;
+            const progressPercent = Math.min(100, Math.max(0, ((currentXP - currentLevelBase) / (nextLevelTarget - currentLevelBase)) * 100));
+            xpBar.style.width = `${progressPercent}%`;
+
+
+            // Calculate display info for ALL challenges
+            const allChallenges = CHALLENGES_DB.map(c => game.getChallengeDisplayInfo(c.id));
+
+            // Grouping
+            const completedList = allChallenges.filter(c => c.isCompleted);
+            const activeList = allChallenges.filter(c => !c.isCompleted);
+            // activeList includes Locked ones (blurred) + In Progress ones
+
+            // Section: Challenges En Cours (Includes Locked)
+            if (activeList.length > 0) {
+                const activeSection = document.createElement('section');
+                activeSection.innerHTML = `
+                    <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                        Challenges en cours / À venir
+                    </h2>
+                    <div class="space-y-4">
+                        ${activeList.map(c => renderCard(c)).join('')}
+                    </div>
+                `;
+                container.appendChild(activeSection);
+            }
+
+            // Section: Challenges Réalisés
+            if (completedList.length > 0) {
+                const doneSection = document.createElement('section');
+                doneSection.classList.add('mt-8');
+                doneSection.innerHTML = `
+                    <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-white/20"></span>
+                        Terminés
+                    </h2>
+                    <div class="space-y-4 opacity-80 decoration-slice">
+                        ${completedList.map(c => renderCard(c)).join('')}
+                    </div>
+                `;
+                container.appendChild(doneSection);
+            }
+        }
+
+        function renderCard(c) {
+            // c structure: { id, title, desc, xp, isCompleted, isLocked, current, target, unit, percent, reward }
+
+            let statusClass = "border-white/5 bg-[#131313]";
+            let blurEffect = "";
+            let overlay = "";
+            let barColor = "bg-primary";
+
+            if (c.isLocked) {
+                // Blurred & Locked
+                // We render the card with blur filter, and an absolute centered Lock icon
+                blurEffect = "opacity-50 blur-[2px] pointer-events-none grayscale";
+                overlay = `
+                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center text-gray-400">
+                        <div class="p-3 bg-black/50 rounded-full backdrop-blur-md border border-white/10">
+                            <span class="material-symbols-outlined text-2xl">lock</span>
+                        </div>
+                        <span class="text-[10px] font-bold uppercase mt-2">DÉBLOQUER LE PRÉCÉDENT</span>
+                    </div>
+                `;
+                barColor = "bg-gray-700";
+            }
+
+            if (c.isCompleted) {
+                statusClass = "border-primary/30 bg-primary/5";
+            }
+
+            return `
+            <div class="relative rounded-2xl border ${statusClass} p-4 overflow-hidden transition-all group">
+                ${overlay}
+                <div class="${c.isLocked ? 'blur-sm' : ''}">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h3 class="font-bold text-white text-lg leading-tight group-hover:text-primary transition-colors">${c.title}</h3>
+                            <p class="text-xs text-gray-400 mt-1 line-clamp-2">${c.desc}</p>
+                        </div>
+                        <div class="flex flex-col items-end">
+                             <div class="px-2 py-1 rounded bg-white/5 border border-white/5 text-[10px] font-bold text-primary whitespace-nowrap">
+                                + ${c.xp} XP
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="mt-4">
+                        <div class="flex justify-between text-[10px] font-bold uppercase text-gray-500 mb-1">
+                            <span>Progression</span>
+                            <span>${c.current} / ${c.target} ${c.unit}</span>
+                        </div>
+                        <div class="h-2 w-full bg-black rounded-full overflow-hidden border border-white/5">
+                            <div class="h-full ${barColor} transition-all duration-700 rounded-full" style="width: ${c.percent}%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reward / Status Footer -->
+                    <div class="mt-3 flex items-center justify-between border-t border-white/5 pt-3">
+                         <div class="flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[14px] ${c.isCompleted ? 'text-primary' : 'text-gray-600'}">emoji_events</span>
+                            <span class="text-[10px] font-bold ${c.isCompleted ? 'text-white' : 'text-gray-600'} uppercase">${c.reward}</span>
+                         </div>
+                         ${c.isCompleted ?
+                    '<span class="text-[10px] font-black text-primary uppercase flex items-center gap-1">Terminé <span class="material-symbols-outlined text-sm">check_circle</span></span>' : ''}
+                    </div>
+                </div>
+            </div>
+            `;
         }
     </script>
 </body>
