@@ -22,10 +22,10 @@ const CHALLENGES_DB = [
     {
         id: "profile_optimize",
         title: "Identité Confirmée",
-        desc: "Compléter son profil (Photo, Poids, Taille).",
+        desc: "Compléter son profil à 100% (7 champs).",
         xp: 150,
-        type: "one_shot",
-        target: 1, unit: "action",
+        type: "accumulate",
+        target: 7, unit: "champs",
         reqId: "welcome_start",
         category: "start",
         reward: "Ebook : Nutrition Base"

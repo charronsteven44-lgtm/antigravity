@@ -4,9 +4,8 @@ class GameLogic {
         this.initSensors();
         this.checkPassiveChallenges();
 
-        // Listen for internal updates to refresh UI if needed (though UI usually polls or is static)
         window.addEventListener('update-gamification', () => {
-            /* Optional: triggers UI refresh if implemented */
+            /* Optional: triggers UI refresh */
         });
     }
 
@@ -22,17 +21,19 @@ class GameLogic {
                 progress: {}, // { challengeId: currentVal } for accumulated stats
                 stats: {
                     steps: 0,
-                    days: 1, // Days since install (mock)
-                    friendsInvited: 0
+                    days: 1, // Days since install
+                    friendsInvited: 0,
+                    profileFields: 0 // New stat for profile completion
                 }
             };
-            // Default completed first one
             this.completeChallenge('welcome_start');
         }
 
-        // Ensure structure exists if updating from old version (backward compat)
+        // Ensure structure exists if updating from old version
         if (!this.state.progress) this.state.progress = {};
-        if (!this.state.stats) this.state.stats = { steps: 0, days: 1, friendsInvited: 0 };
+        if (!this.state.stats) this.state.stats = { steps: 0, days: 1, friendsInvited: 0, profileFields: 0 };
+        // Ensure profileFields exists in stats
+        if (typeof this.state.stats.profileFields === 'undefined') this.state.stats.profileFields = 0;
     }
 
     saveState() {
@@ -47,10 +48,9 @@ class GameLogic {
     }
 
     // Update the progress of a specific challenge (or global stat)
-    // Usage: game.updateProgress('steps', 500); // Adds 500 steps
     updateProgress(statKey, value, isAdditive = true) {
         if (isAdditive) {
-            this.state.stats[statKey] += value;
+            this.state.stats[statKey] = (this.state.stats[statKey] || 0) + value;
         } else {
             this.state.stats[statKey] = value;
         }
@@ -60,7 +60,7 @@ class GameLogic {
         this.saveState();
     }
 
-    // Check all challenges that rely on a specific stat (e.g., 'steps')
+    // Check all challenges that rely on a specific stat
     checkStatChallenges(statKey) {
         CHALLENGES_DB.forEach(c => {
             // Map challenge to stat
@@ -68,11 +68,12 @@ class GameLogic {
             if (c.id.includes('steps')) relevantStat = 'steps';
             if (c.id.includes('loyalty') || c.id.includes('trial') || c.id.includes('month')) relevantStat = 'days';
             if (c.id === 'invite_friend') relevantStat = 'friendsInvited';
+            if (c.id === 'profile_optimize') relevantStat = 'profileFields';
 
             if (relevantStat === statKey) {
                 // Check completion
-                const currentVal = this.state.stats[statKey];
-                // Update local progress for this challenge for display
+                const currentVal = this.state.stats[statKey] || 0;
+                // Update local progress for this challenge for display (min with target)
                 this.state.progress[c.id] = Math.min(currentVal, c.target);
 
                 if (currentVal >= c.target) {
@@ -86,7 +87,6 @@ class GameLogic {
         const nextThreshold = LEVEL_THRESHOLDS[this.state.level];
         if (this.state.xp >= nextThreshold) {
             this.state.level++;
-            // Could trigger a modal or toast
             this.showToast(`Niveau ${this.state.level} atteint !`, 'levelup');
         }
     }
@@ -96,9 +96,6 @@ class GameLogic {
 
         const challenge = CHALLENGES_DB.find(c => c.id === id);
         if (!challenge) return;
-
-        // Note: We allow completion even if locked if logic triggers it (safety net),
-        // but normally UI handles locking.
 
         this.state.completed.push(id);
         this.state.progress[id] = challenge.target; // Max out progress bar
@@ -112,7 +109,6 @@ class GameLogic {
         return !this.state.completed.includes(challenge.reqId);
     }
 
-    // Helper for UI to render bars
     getChallengeDisplayInfo(id) {
         const c = CHALLENGES_DB.find(x => x.id === id);
         if (!c) return null;
@@ -122,9 +118,10 @@ class GameLogic {
 
         let current = this.state.progress[id] || 0;
 
-        // Ensure sync with global stats if progress entry missing
+        // Ensure sync with global stats if progress entry missing/outdated
         if (c.id.includes('steps')) current = this.state.stats.steps || 0;
         if (c.id.includes('loyalty')) current = this.state.stats.days || 0;
+        if (c.id === 'profile_optimize') current = this.state.stats.profileFields || 0;
 
         // Cap at target
         if (current > c.target) current = c.target;
@@ -142,9 +139,43 @@ class GameLogic {
     }
 
     checkPassiveChallenges() {
-        // Profile
-        const profileDone = localStorage.getItem('profileData') !== null;
-        if (profileDone) this.completeChallenge('profile_optimize');
+        // --- 7 FIELDS PROFILE CHECK ---
+        const userStr = localStorage.getItem('clientUser');
+        let profileCount = 0;
+
+        if (userStr) {
+            try {
+                const u = JSON.parse(userStr);
+                // 1. Photo (avatar)
+                if (u.avatar && u.avatar.length > 5 && !u.avatar.includes('default')) profileCount++; // naive check
+                else if (u.avatar && u.avatar.length > 0) profileCount++; // Accept any avatar for now
+
+                // 2. Name
+                if (u.name && u.name.trim().length > 1) profileCount++;
+
+                // 3. Email
+                if (u.email && u.email.includes('@')) profileCount++;
+
+                // 4. Age
+                if (u.age) profileCount++;
+
+                // 5. Weight
+                if (u.weight) profileCount++;
+
+                // 6. Height
+                // Check if height exists in data structure. 
+                // Usually questionnaire saves it. If not present, user must edit profile.
+                if (u.height) profileCount++;
+
+                // 7. Sex
+                if (u.sex || u.gender) profileCount++;
+
+            } catch (e) { console.error("Profile parsing error", e); }
+        }
+
+        // Update with overwrite (false)
+        this.updateProgress('profileFields', profileCount, false);
+
 
         // Date events
         const today = new Date();
@@ -152,7 +183,7 @@ class GameLogic {
         const m = today.getMonth() + 1;
 
         if (d === 25 && m === 12) this.completeChallenge('special_xmas');
-        if (d === 1) this.completeChallenge('prog_month_1'); // Mock logic for month 1 if needed
+        if (d === 1) this.completeChallenge('prog_month_1');
 
         // Ensure steps/days stats are checked against DB
         this.checkStatChallenges('steps');
@@ -165,7 +196,7 @@ class GameLogic {
                 const acc = event.accelerationIncludingGravity;
                 if (!acc) return;
                 const total = Math.abs(acc.x) + Math.abs(acc.y) + Math.abs(acc.z);
-                if (total > 30) { // Slightly higher threshold to avoid noise
+                if (total > 30) {
                     this.completeChallenge('shake_it');
                 }
             });
@@ -186,7 +217,6 @@ class GameLogic {
 
         document.body.appendChild(toast);
 
-        // Animate in
         requestAnimationFrame(() => {
             toast.classList.remove('translate-y-[-100%]', 'opacity-0');
         });
@@ -196,10 +226,7 @@ class GameLogic {
             setTimeout(() => toast.remove(), 300);
         }, 3000);
     }
-
-    // Debug / Simulator
-    simAddSteps(n) { this.updateProgress('steps', n); console.log("Added steps:", n); }
 }
 
 const game = new GameLogic();
-window.game = game; // Expose for debugging
+window.game = game;
