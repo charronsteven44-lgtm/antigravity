@@ -1,6 +1,7 @@
 class ActivityTracker {
     constructor() {
         this.STORAGE_KEY = 'essor_activity_history';
+        this.permissionsGranted = localStorage.getItem('essor_permissions_granted') === 'true';
         this.init();
     }
 
@@ -9,8 +10,25 @@ class ActivityTracker {
         if (!localStorage.getItem(this.STORAGE_KEY)) {
             this.seedHistory();
         }
-        // Simulate today's steps if needed (prototype only)
-        this.simulateRealtimeUpdates();
+
+        // Only start updates if permissions granted
+        if (this.permissionsGranted) {
+            this.simulateRealtimeUpdates();
+        }
+    }
+
+    async requestPermissions() {
+        return new Promise((resolve) => {
+            // Simulate OS Dialog delay
+            setTimeout(() => {
+                this.permissionsGranted = true;
+                localStorage.setItem('essor_permissions_granted', 'true');
+                this.simulateRealtimeUpdates();
+                // Sync immediate 'today' step count to ensure display is not 0
+                this.addSteps(0);
+                resolve(true);
+            }, 1000); // 1s delay
+        });
     }
 
     // Seed 7 days of dummy data for the prototype

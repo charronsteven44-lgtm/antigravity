@@ -129,6 +129,18 @@
                 <div class="h-40 w-full relative">
                     <canvas id="activity-chart"></canvas>
                 </div>
+
+                <!-- Permission Overlay -->
+                <div id="activity-permission-overlay"
+                    class="absolute inset-0 bg-white/10 backdrop-blur-md rounded-3xl flex flex-col items-center justify-center z-10 hidden">
+                    <span class="material-symbols-outlined text-4xl text-primary mb-2 animate-bounce">footprint</span>
+                    <button onclick="enableActivityTracking()"
+                        class="bg-primary text-black font-bold px-6 py-3 rounded-xl shadow-lg hover:scale-105 transition-transform">
+                        Activer le suivi des pas
+                    </button>
+                    <p class="text-[10px] text-gray-400 mt-2 text-center max-w-[200px]">Nécessaire pour calculer vos
+                        calories</p>
+                </div>
             </div>
     </div>
 
@@ -310,7 +322,16 @@
             }
 
             // --- ACTIVITY TRACKER INIT ---
+            // --- ACTIVITY TRACKER INIT ---
             function renderActivity() {
+                // Permission Check
+                if (!activityTracker.permissionsGranted) {
+                    document.getElementById('activity-permission-overlay').classList.remove('hidden');
+                    return; // Stop rendering
+                } else {
+                    document.getElementById('activity-permission-overlay').classList.add('hidden');
+                }
+
                 const metrics = activityTracker.getMetrics();
                 document.getElementById('act-total-steps').textContent = metrics.totalSteps7d.toLocaleString() + ' pas';
                 document.getElementById('act-avg').textContent = metrics.avgSteps.toLocaleString();
@@ -318,12 +339,13 @@
                 document.getElementById('act-cals').textContent = metrics.calories + ' kcal';
 
                 // Chart
-                const history = activityTracker.getHistory(); // ordered oldest to newest? verify logic.
+                const history = activityTracker.getHistory();
                 const sorted = [...history].sort((a, b) => new Date(a.date) - new Date(b.date)).slice(-7);
 
                 const ctxAct = document.getElementById('activity-chart').getContext('2d');
 
-                // Colors based on goal (approx 6000)
+                // Colors based on goal
+                // Green > 8000, Yellow > 5000, Red < 5000
                 const colors = sorted.map(d => d.steps >= 8000 ? '#49e619' : (d.steps >= 5000 ? '#fbbf24' : '#ef4444'));
 
                 if (window.activityChartInstance) window.activityChartInstance.destroy();
@@ -353,6 +375,18 @@
                     }
                 });
             }
+
+            window.enableActivityTracking = async function () {
+                const btn = document.querySelector('#activity-permission-overlay button');
+                const originalText = btn.textContent;
+                btn.textContent = "Connexion...";
+                btn.disabled = true;
+
+                await activityTracker.requestPermissions();
+                renderActivity();
+            };
+
+            renderActivity();
         });
     </script>
 </body>
