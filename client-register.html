@@ -121,7 +121,7 @@
                     const result = await res.json();
                     localStorage.setItem('clientUser', JSON.stringify(result.user));
                     localStorage.setItem('isClientLoggedIn', 'true');
-                    window.location.href = 'client-dashboard.html';
+                    window.location.href = 'dashboard.html';
                 } else {
                     const error = await res.json();
                     alert(error.message || 'Erreur lors de l’inscription');
@@ -132,7 +132,7 @@
                 // Fallback for demo/offline
                 localStorage.setItem('clientUser', JSON.stringify({ name: data.name, email: data.email }));
                 localStorage.setItem('isClientLoggedIn', 'true');
-                window.location.href = 'client-dashboard.html';
+                window.location.href = 'dashboard.html';
             }
         });
     </script>

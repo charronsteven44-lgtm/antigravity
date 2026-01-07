@@ -56,9 +56,11 @@
             <div class="relative cursor-pointer group" onclick="window.location.href='/profile.html'">
                 <div
                     class="w-12 h-12 rounded-full border-2 border-primary p-0.5 bg-gray-800 overflow-hidden shadow-neon transition-transform group-hover:scale-110">
-                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200"
+                    <img id="user-avatar"
+                        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200"
                         class="w-full h-full object-cover rounded-full">
                 </div>
+                <!-- Status Dot -->
                 <div class="absolute top-0 right-0 w-3 h-3 bg-primary rounded-full border-2 border-background-dark">
                 </div>
             </div>
@@ -69,13 +71,17 @@
             <!-- Stats Grid -->
             <div class="grid grid-cols-2 gap-4">
                 <!-- Calories Card -->
+                <!-- Weight Card (Replaces Calories) -->
                 <div
                     class="bg-white dark:bg-surface-dark p-4 rounded-3xl border border-white/5 shadow-sm min-h-[140px] flex flex-col justify-center relative overflow-hidden">
                     <div class="text-center flex flex-col items-center">
-                        <h3 class="text-gray-400 text-[10px] font-bold uppercase mb-2">Calories</h3>
-                        <span class="text-2xl font-black text-slate-900 dark:text-white">1850</span>
-                        <div class="w-full bg-gray-200 dark:bg-gray-800 h-1 rounded-full mt-2 overflow-hidden">
-                            <div class="bg-primary h-1 rounded-full w-3/4"></div>
+                        <h3 class="text-gray-400 text-[10px] font-bold uppercase mb-2">Poids Actuel</h3>
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-3xl font-black text-slate-900 dark:text-white" id="dash-weight">--</span>
+                            <span class="text-xs font-bold text-gray-500" id="dash-unit">kg</span>
+                        </div>
+                        <div class="w-full bg-gray-200 dark:bg-gray-800 h-1 rounded-full mt-3 overflow-hidden">
+                            <div class="bg-primary h-1 rounded-full w-full opacity-50"></div>
                         </div>
                     </div>
                 </div>
@@ -229,7 +235,26 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            // Load Program from Local Storage (Netlify/Serverless flow)
+            // --- SYNC USER DATA ---
+            const clientData = JSON.parse(localStorage.getItem('clientUser') || '{}');
+
+            // Name
+            if (clientData.name) {
+                document.getElementById('welcome-text').textContent = `Bonjour ${clientData.name.split(' ')[0]} !`;
+            }
+
+            // Avatar
+            if (clientData.avatar) {
+                document.getElementById('user-avatar').src = clientData.avatar;
+            }
+
+            // Weight
+            if (clientData.weight) {
+                document.getElementById('dash-weight').textContent = clientData.weight;
+                document.getElementById('dash-unit').textContent = clientData.weightUnit || 'kg';
+            }
+
+            // --- LOAD PROGRAM ---
             const program = WorkoutLogic.loadFromLocal();
             const btn = document.getElementById('fallback-program-btn');
             const container = document.getElementById('today-workout-card');
