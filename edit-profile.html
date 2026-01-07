@@ -61,6 +61,11 @@
                         <input type="text" id="name" required
                             class="w-full bg-black/40 border-white/5 rounded-2xl px-5 py-4 text-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none">
                     </div>
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-bold text-gray-400 pl-1">Email</label>
+                        <input type="email" id="email" required
+                            class="w-full bg-black/40 border-white/5 rounded-2xl px-5 py-4 text-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none">
+                    </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-gray-400 pl-1">Âge</label>
@@ -175,7 +180,10 @@
             const responses = JSON.parse(localStorage.getItem('responses') || '{}');
 
             // Prefill
+            // Prefill
             document.getElementById('name').value = clientData.name || '';
+            document.getElementById('email').value = clientData.email || '';
+            document.getElementById('age').value = clientData.age || '';
             document.getElementById('age').value = clientData.age || '';
             document.getElementById('gender').value = clientData.gender || 'Homme';
             document.getElementById('weight').value = clientData.weight || '';
@@ -193,6 +201,7 @@
                 const updatedClient = {
                     ...clientData,
                     name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
                     age: document.getElementById('age').value,
                     gender: document.getElementById('gender').value,
                     weight: document.getElementById('weight').value,
