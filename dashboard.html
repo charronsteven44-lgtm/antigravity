@@ -53,15 +53,33 @@
                 <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white" id="welcome-text">Bonjour !
                 </h1>
             </div>
-            <div class="relative cursor-pointer group" onclick="window.location.href='/profile.html'">
-                <div
-                    class="w-12 h-12 rounded-full border-2 border-primary p-0.5 bg-gray-800 overflow-hidden shadow-neon transition-transform group-hover:scale-110">
-                    <img id="user-avatar"
-                        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200"
-                        class="w-full h-full object-cover rounded-full">
-                </div>
-                <!-- Status Dot -->
-                <div class="absolute top-0 right-0 w-3 h-3 bg-primary rounded-full border-2 border-background-dark">
+            <!-- Header Actions -->
+            <div class="flex items-center gap-3">
+                <!-- XP Badge -->
+                <button onclick="window.location.href='/challenges.html'"
+                    class="flex items-center gap-2 bg-white/5 border border-white/5 rounded-full pl-1 pr-3 py-1 cursor-pointer hover:bg-white/10 active:scale-95 transition-all">
+                    <div
+                        class="w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center bg-black/50">
+                        <span class="text-[10px] font-black text-white" id="header-lvl">1</span>
+                    </div>
+                    <div class="flex flex-col text-left">
+                        <span class="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Niveau</span>
+                        <div class="w-10 h-1 bg-gray-700 rounded-full overflow-hidden">
+                            <div class="bg-primary h-full w-[10%]" id="header-xp-bar"></div>
+                        </div>
+                    </div>
+                </button>
+
+                <div class="relative cursor-pointer group" onclick="window.location.href='/profile.html'">
+                    <div
+                        class="w-12 h-12 rounded-full border-2 border-primary p-0.5 bg-gray-800 overflow-hidden shadow-neon transition-transform group-hover:scale-110">
+                        <img id="user-avatar"
+                            src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200"
+                            class="w-full h-full object-cover rounded-full">
+                    </div>
+                    <!-- Status Dot -->
+                    <div class="absolute top-0 right-0 w-3 h-3 bg-primary rounded-full border-2 border-background-dark">
+                    </div>
                 </div>
             </div>
         </header>
@@ -233,8 +251,30 @@
         </nav>
     </div>
 
+    <script src="js/gamification-data.js"></script>
+    <script src="js/gamification-logic.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
+            // ... [Previous logic] ...
+
+            // GAMIFICATION UI SYNC
+            document.addEventListener('gamification-updated', (e) => {
+                const state = e.detail;
+                const lvlEl = document.getElementById('header-lvl');
+                const barEl = document.getElementById('header-xp-bar');
+
+                if (lvlEl) lvlEl.textContent = state.level;
+                if (barEl) {
+                    const nextXp = GameLogic.getNextLevelXP(); // Simple max for bar
+                    // Simple bar based on total XP relative to next threshold (approx)
+                    const width = Math.min((state.xp / nextXp) * 100, 100);
+                    barEl.style.width = width + '%';
+                }
+            });
+
+            // Init Logic (already runs in gamification-logic.js DOMContentLoaded, but listeners might be late)
+            // Force UI update if needed or rely on event.
+
             // --- SYNC USER DATA ---
             const clientData = JSON.parse(localStorage.getItem('clientUser') || '{}');
 
