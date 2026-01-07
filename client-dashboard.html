@@ -261,7 +261,9 @@
             const registrationDate = userData.registrationDate ? new Date(userData.registrationDate) : new Date();
             const now = new Date();
             const daysSinceReg = Math.floor((now - registrationDate) / (1000 * 60 * 60 * 24));
-            const isTrialActive = daysSinceReg < 7;
+            // Hide trial if subscribed OR trial expired
+            const hasSubscription = userData.subscriptionTier === 'basic' || userData.subscriptionTier === 'premium';
+            const isTrialActive = !hasSubscription && daysSinceReg < 7;
 
             if (isTrialActive) {
                 const daysLeft = 7 - daysSinceReg;

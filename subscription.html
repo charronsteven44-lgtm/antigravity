@@ -95,7 +95,7 @@
                     <span>Exercices essentiels</span>
                 </li>
             </ul>
-            <button onclick="window.location.href='dashboard.html'"
+            <button onclick="selectPlan('free')"
                 class="w-full bg-white/5 hover:bg-white/10 text-white font-bold py-4 rounded-2xl transition-all">
                 Continuer gratuitement
             </button>
@@ -130,7 +130,7 @@
                     <span>Conseils automatiques</span>
                 </li>
             </ul>
-            <button
+            <button onclick="selectPlan('basic')"
                 class="w-full bg-primary hover:bg-primary-hover text-background-dark font-bold py-4 rounded-2xl shadow-[0_4px_20px_rgba(73,230,25,0.3)] transition-all">
                 Choisir ESSOR BASIC
             </button>
@@ -178,7 +178,7 @@
                     <span>Support prioritaire</span>
                 </li>
             </ul>
-            <button
+            <button onclick="selectPlan('premium')"
                 class="w-full bg-primary hover:bg-primary-hover text-background-dark font-black py-4 rounded-2xl shadow-[0_4px_20px_rgba(73,230,25,0.3)] transition-all">
                 Choisir ESSOR PREMIUM
             </button>
@@ -199,7 +199,7 @@
                 abonnement à tout moment</li>
         </ul>
         <br>
-        <button onclick="window.location.href='dashboard.html'"
+        <button onclick="selectPlan('free')"
             class="w-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white font-bold py-4 rounded-2xl transition-all">
             Continuer gratuitement
         </button>
@@ -209,6 +209,20 @@
         ESSOR ACTIVE © 2025 - TOUS DROITS RÉSERVÉS
     </footer>
 
+    <script>
+        function selectPlan(tier) {
+            const clientData = JSON.parse(localStorage.getItem('clientUser') || '{}');
+
+            // Update subscription
+            clientData.subscriptionTier = tier; // 'free', 'basic', 'premium'
+            clientData.subscriptionDate = new Date().toISOString();
+
+            localStorage.setItem('clientUser', JSON.stringify(clientData));
+
+            // Redirect
+            window.location.href = 'client-dashboard.html';
+        }
+    </script>
 </body>
 
 </html>

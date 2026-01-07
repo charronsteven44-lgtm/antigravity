@@ -153,6 +153,30 @@
                     class="w-full py-3 bg-white/5 hover:bg-white/10 text-white text-xs font-bold rounded-xl border border-white/5 transition-colors">
                     VOIR MA SÉANCE DU JOUR
                 </button>
+                </button>
+            </div>
+
+            <!-- Subscription Status -->
+            <div class="space-y-4">
+                <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest pl-1">Abonnement</p>
+                <div class="premium-card rounded-3xl overflow-hidden p-5 flex items-center justify-between"
+                    id="sub-card">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center bg-gray-800"
+                            id="sub-icon-bg">
+                            <span class="material-symbols-outlined text-gray-400" id="sub-icon">star</span>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5"
+                                id="sub-label">Actuel</p>
+                            <h4 class="text-white font-bold" id="sub-name">Chargement...</h4>
+                        </div>
+                    </div>
+                    <button onclick="window.location.href='subscription.html'"
+                        class="bg-white/5 hover:bg-white/10 text-xs font-bold px-4 py-2 rounded-xl transition-colors text-gray-300">
+                        Gérer
+                    </button>
+                </div>
             </div>
 
             <!-- Personal Info List -->
@@ -300,6 +324,30 @@
             // --- Fill Identity ---
             document.getElementById('user-display-name').textContent = clientData.name || "Utilisateur";
             document.getElementById('val-email').textContent = clientData.email || "--";
+
+            // --- Subscription Logic ---
+            const tier = clientData.subscriptionTier || 'free';
+            const subNameEl = document.getElementById('sub-name');
+            const subIconEl = document.getElementById('sub-icon');
+            const subIconBg = document.getElementById('sub-icon-bg');
+            const subCard = document.getElementById('sub-card');
+
+            if (tier === 'premium') {
+                subNameEl.textContent = 'Membre Premium';
+                subNameEl.classList.add('text-primary');
+                subIconEl.textContent = 'workspace_premium';
+                subIconEl.classList.replace('text-gray-400', 'text-black');
+                subIconBg.classList.replace('bg-gray-800', 'bg-primary');
+                subCard.classList.add('border-primary/30');
+            } else if (tier === 'basic') {
+                subNameEl.textContent = 'Abonnement Basique';
+                subIconEl.textContent = 'verified';
+                subIconEl.classList.replace('text-gray-400', 'text-primary');
+                subIconBg.classList.replace('bg-gray-800', 'bg-primary/20');
+            } else {
+                subNameEl.textContent = 'Essai Gratuit';
+                subIconEl.textContent = 'timer';
+            }
 
             // Avatar persistence
             if (clientData.avatar) {
