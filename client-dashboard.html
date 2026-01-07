@@ -13,6 +13,7 @@
     <script src="js/program-logic.js"></script>
     <script src="js/program-selector.js"></script>
     <script src="js/program-db.js"></script>
+    <script src="js/activity-logic.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         tailwind.config = {
@@ -90,78 +91,119 @@
                 </div>
             </div>
 
-            <!-- Program Card -->
-            <div id="program-container">
-                <div class="bg-primary p-5 rounded-3xl shadow-neon relative overflow-hidden group cursor-pointer"
-                    onclick="window.location.href='/my-program-pro.html'">
-                    <div class="absolute top-0 right-0 p-4 opacity-10">
-                        <span class="material-symbols-outlined text-6xl text-black">fitness_center</span>
-                    </div>
-                    <div class="relative z-10 text-black">
-                        <span class="bg-black/20 text-[10px] font-bold px-2 py-1 rounded-lg uppercase">Programme IA
-                            Actif</span>
-                        <h3 class="text-xl font-extrabold mt-2" id="program-title">Mon Programme</h3>
-                        <p class="text-sm font-medium opacity-70 mt-1" id="program-summary">Génération de votre routine
-                            optimale...</p>
-
-                        <div class="mt-4 flex items-center gap-3">
-                            <div class="bg-black/10 px-2 py-1 rounded-lg flex items-center gap-1 text-[10px] font-bold">
-                                <span class="material-symbols-outlined text-[14px]">schedule</span>
-                                <span id="session-duration">30 min</span>
-                            </div>
-                            <div class="bg-black/10 px-2 py-1 rounded-lg flex items-center gap-1 text-[10px] font-bold">
-                                <span class="material-symbols-outlined text-[14px]">bolt</span>
-                                <span id="client-level">Débutant</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Planning Recap -->
-            <div class="space-y-3">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">Planning de la semaine</h3>
-                <div id="mini-planning" class="space-y-2">
-                    <!-- Dynamic Days -->
-                </div>
-            </div>
-
-            <!-- Weight Chart Card (Synced) -->
+            <!-- Activity Tracker Card -->
             <div class="bg-white dark:bg-surface-dark p-6 rounded-3xl border border-white/5 space-y-4">
-                <div class="flex justify-between items-center mb-2">
-                    <h3 class="text-slate-900 dark:text-white font-bold">Évolution Poids</h3>
-                    <div class="flex items-center gap-1 bg-gray-100 dark:bg-white/5 rounded-lg p-1">
-                        <span class="text-[10px] font-bold text-primary px-2">7J</span>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Activité 7 Derniers
+                            Jours</p>
+                        <h3 class="text-2xl font-extrabold text-slate-900 dark:text-white" id="act-total-steps">--</h3>
+                    </div>
+                    <div class="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
+                        <span class="material-symbols-outlined text-orange-500">local_fire_department</span>
                     </div>
                 </div>
-                <div class="h-48 w-full relative">
-                    <canvas id="dashboard-weight-chart"></canvas>
-                </div>
-                <button onclick="window.location.href='profile.html'"
-                    class="w-full py-2 text-xs font-bold text-gray-500 hover:text-primary transition-colors">
-                    Mettre à jour mon poids
-                </button>
-            </div>
-        </main>
 
-        <!-- Bottom Navigation -->
-        <nav
-            class="absolute bottom-0 left-0 w-full z-50 bg-[#f6f8f6]/95 dark:bg-[#131811]/95 backdrop-blur-lg border-t border-slate-200 dark:border-[#2c3829] pb-8 pt-3">
-            <div class="flex justify-around items-center">
-                <a href="client-dashboard.html" class="flex flex-col items-center gap-1 text-primary">
-                    <span class="material-symbols-outlined text-[28px]">analytics</span>
-                    <span class="text-[10px] font-bold">Tableau</span>
-                </a>
-                <a href="my-program-pro.html" class="flex flex-col items-center gap-1 text-gray-400">
-                    <span class="material-symbols-outlined text-[28px]">calendar_today</span>
-                    <span class="text-[10px] font-medium">Programme</span>
-                </a>
-                <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-400">
-                    <span class="material-symbols-outlined text-[28px]">person</span>
-                    <span class="text-[10px] font-medium">Profil</span>
-                </a>
+                <div class="grid grid-cols-3 gap-2">
+                    <div
+                        class="bg-gray-50 dark:bg-black/20 p-3 rounded-2xl flex flex-col items-center justify-center text-center">
+                        <span class="material-symbols-outlined text-primary text-xl mb-1">footprint</span>
+                        <span class="text-[10px] text-gray-500 font-bold uppercase">Moyenne</span>
+                        <span class="text-xs font-bold text-slate-900 dark:text-white" id="act-avg">--</span>
+                    </div>
+                    <div
+                        class="bg-gray-50 dark:bg-black/20 p-3 rounded-2xl flex flex-col items-center justify-center text-center">
+                        <span class="material-symbols-outlined text-blue-400 text-xl mb-1">distance</span>
+                        <span class="text-[10px] text-gray-500 font-bold uppercase">Distance</span>
+                        <span class="text-xs font-bold text-slate-900 dark:text-white" id="act-dist">--</span>
+                    </div>
+                    <div
+                        class="bg-gray-50 dark:bg-black/20 p-3 rounded-2xl flex flex-col items-center justify-center text-center">
+                        <span
+                            class="material-symbols-outlined text-orange-500 text-xl mb-1">local_fire_department</span>
+                        <span class="text-[10px] text-gray-500 font-bold uppercase">Calories</span>
+                        <span class="text-xs font-bold text-slate-900 dark:text-white" id="act-cals">--</span>
+                    </div>
+                </div>
+
+                <div class="h-40 w-full relative">
+                    <canvas id="activity-chart"></canvas>
+                </div>
             </div>
-        </nav>
+    </div>
+
+    <!-- Program Card -->
+    <div id="program-container">
+        <div class="bg-primary p-5 rounded-3xl shadow-neon relative overflow-hidden group cursor-pointer"
+            onclick="window.location.href='/my-program-pro.html'">
+            <div class="absolute top-0 right-0 p-4 opacity-10">
+                <span class="material-symbols-outlined text-6xl text-black">fitness_center</span>
+            </div>
+            <div class="relative z-10 text-black">
+                <span class="bg-black/20 text-[10px] font-bold px-2 py-1 rounded-lg uppercase">Programme IA
+                    Actif</span>
+                <h3 class="text-xl font-extrabold mt-2" id="program-title">Mon Programme</h3>
+                <p class="text-sm font-medium opacity-70 mt-1" id="program-summary">Génération de votre routine
+                    optimale...</p>
+
+                <div class="mt-4 flex items-center gap-3">
+                    <div class="bg-black/10 px-2 py-1 rounded-lg flex items-center gap-1 text-[10px] font-bold">
+                        <span class="material-symbols-outlined text-[14px]">schedule</span>
+                        <span id="session-duration">30 min</span>
+                    </div>
+                    <div class="bg-black/10 px-2 py-1 rounded-lg flex items-center gap-1 text-[10px] font-bold">
+                        <span class="material-symbols-outlined text-[14px]">bolt</span>
+                        <span id="client-level">Débutant</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Planning Recap -->
+    <div class="space-y-3">
+        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">Planning de la semaine</h3>
+        <div id="mini-planning" class="space-y-2">
+            <!-- Dynamic Days -->
+        </div>
+    </div>
+
+    <!-- Weight Chart Card (Synced) -->
+    <div class="bg-white dark:bg-surface-dark p-6 rounded-3xl border border-white/5 space-y-4">
+        <div class="flex justify-between items-center mb-2">
+            <h3 class="text-slate-900 dark:text-white font-bold">Évolution Poids</h3>
+            <div class="flex items-center gap-1 bg-gray-100 dark:bg-white/5 rounded-lg p-1">
+                <span class="text-[10px] font-bold text-primary px-2">7J</span>
+            </div>
+        </div>
+        <div class="h-48 w-full relative">
+            <canvas id="dashboard-weight-chart"></canvas>
+        </div>
+        <button onclick="window.location.href='profile.html'"
+            class="w-full py-2 text-xs font-bold text-gray-500 hover:text-primary transition-colors">
+            Mettre à jour mon poids
+        </button>
+    </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav
+        class="absolute bottom-0 left-0 w-full z-50 bg-[#f6f8f6]/95 dark:bg-[#131811]/95 backdrop-blur-lg border-t border-slate-200 dark:border-[#2c3829] pb-8 pt-3">
+        <div class="flex justify-around items-center">
+            <a href="client-dashboard.html" class="flex flex-col items-center gap-1 text-primary">
+                <span class="material-symbols-outlined text-[28px]">analytics</span>
+                <span class="text-[10px] font-bold">Tableau</span>
+            </a>
+            <a href="my-program-pro.html" class="flex flex-col items-center gap-1 text-gray-400">
+                <span class="material-symbols-outlined text-[28px]">calendar_today</span>
+                <span class="text-[10px] font-medium">Programme</span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-400">
+                <span class="material-symbols-outlined text-[28px]">person</span>
+                <span class="text-[10px] font-medium">Profil</span>
+            </a>
+        </div>
+    </nav>
     </div>
 
     <script>
@@ -257,8 +299,56 @@
                                    </div>
                                    <span class="material-symbols-outlined text-[18px] ${isRest ? 'text-gray-600' : 'text-primary'}">${isRest ? 'bed' : 'timer'}</span>
                                </div>
-                           `;
+                    `;
                     planningContainer.insertAdjacentHTML('beforeend', row);
+                });
+
+                renderActivity();
+                window.addEventListener('activity-updated', renderActivity);
+            }
+
+            // --- ACTIVITY TRACKER INIT ---
+            function renderActivity() {
+                const metrics = activityTracker.getMetrics();
+                document.getElementById('act-total-steps').textContent = metrics.totalSteps7d.toLocaleString() + ' pas';
+                document.getElementById('act-avg').textContent = metrics.avgSteps.toLocaleString();
+                document.getElementById('act-dist').textContent = metrics.distanceKm + ' km';
+                document.getElementById('act-cals').textContent = metrics.calories + ' kcal';
+
+                // Chart
+                const history = activityTracker.getHistory(); // ordered oldest to newest? verify logic.
+                const sorted = [...history].sort((a, b) => new Date(a.date) - new Date(b.date)).slice(-7);
+
+                const ctxAct = document.getElementById('activity-chart').getContext('2d');
+
+                // Colors based on goal (approx 6000)
+                const colors = sorted.map(d => d.steps >= 8000 ? '#49e619' : (d.steps >= 5000 ? '#fbbf24' : '#ef4444'));
+
+                if (window.activityChartInstance) window.activityChartInstance.destroy();
+
+                window.activityChartInstance = new Chart(ctxAct, {
+                    type: 'bar',
+                    data: {
+                        labels: sorted.map(d => new Date(d.date).toLocaleDateString('fr-FR', { weekday: 'short' })),
+                        datasets: [{
+                            data: sorted.map(d => d.steps),
+                            backgroundColor: colors,
+                            borderRadius: 4,
+                            barThickness: 12
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { display: false },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#6b7280', font: { size: 10 } }
+                            }
+                        }
+                    }
                 });
             }
         });
