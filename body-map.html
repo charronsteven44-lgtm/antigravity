@@ -36,9 +36,6 @@
             stroke: #49e619;
             /* Primary */
             stroke-width: 1;
-            opacity: 0.0;
-            /* Invisible by default if using silhouette, but user wants clickable highlights */
-            /* Actually, for the "Realistic" style we might want visible wireframes or low opacity */
             opacity: 0.3;
             transition: all 0.3s ease;
             cursor: pointer;
@@ -281,10 +278,11 @@
     </div>
 
     <!-- EXERCISE LIST POPUP -->
+    <!-- Removed 'pointer-events-auto' from inner divs to ensure 'pointer-events-none' on parent is respected -->
     <div id="exercise-panel"
         class="fixed inset-0 z-50 pointer-events-none opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center sm:p-4">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm pointer-events-auto" onclick="closeExercises()"></div>
-        <div class="bg-[#1a1a1a] w-full sm:w-full sm:max-w-lg rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl pointer-events-auto transform translate-y-full transition-transform duration-300 max-h-[85vh] flex flex-col border border-white/10"
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeExercises()"></div>
+        <div class="bg-[#1a1a1a] w-full sm:w-full sm:max-w-lg rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl transform translate-y-full transition-transform duration-300 max-h-[85vh] flex flex-col border border-white/10"
             id="exercise-panel-content">
 
             <div
@@ -352,7 +350,9 @@
             const panel = document.getElementById('exercise-panel');
             const content = document.getElementById('exercise-panel-content');
 
+            // Re-enable clicks when opening
             panel.classList.remove('pointer-events-none', 'opacity-0');
+
             setTimeout(() => {
                 content.style.transform = 'translateY(0)';
             }, 10);
