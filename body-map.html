@@ -31,13 +31,15 @@
         }
 
         .muscle-path {
-            fill: #2a3626;
-            /* Dark Greenish Grey */
+            fill: url(#muscle-gradient);
+            /* Premium 3D Effect */
             stroke: #49e619;
-            /* Primary */
-            stroke-width: 1;
-            opacity: 0.3;
-            transition: all 0.3s ease;
+            stroke-width: 0.5;
+            /* Thinner stroke for realism */
+            stroke-opacity: 0.5;
+            opacity: 0.8;
+            /* Higher base opacity for gradient visibility */
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
         }
 
@@ -87,6 +89,20 @@
         <!-- ANTERIOR VIEW (FACE) -->
         <div id="body-front" class="w-full h-full max-w-lg relative transition-opacity duration-500">
             <svg id="svg-front" viewBox="0 0 500 900" class="w-full h-full drop-shadow-[0_0_15px_rgba(73,230,25,0.1)]">
+                <defs>
+                    <radialGradient id="muscle-gradient" cx="30%" cy="30%" r="90%" fx="30%" fy="30%">
+                        <stop offset="0%" style="stop-color:#4a5e42;stop-opacity:1" /> <!-- Lighter highlight -->
+                        <stop offset="100%" style="stop-color:#1f291c;stop-opacity:1" /> <!-- Darker shadow -->
+                    </radialGradient>
+                    <filter id="glow-selected">
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                        <feMerge>
+                            <feMergeNode in="coloredBlur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+
                 <!-- Silhouette / Body Base -->
                 <path
                     d="M250,50 C230,50 215,80 215,100 C215,110 220,130 225,140 C190,150 145,170 145,210 C145,250 150,300 155,350 C155,380 160,400 170,420 C185,480 195,520 205,600 C205,650 195,750 195,800 C195,850 175,880 185,880 C205,880 235,860 250,860 C265,860 295,880 315,880 C325,880 305,850 305,800 C305,750 295,650 295,600 C305,520 315,480 330,420 C340,400 345,380 345,350 C350,300 355,250 355,210 C355,170 310,150 275,140 C280,130 285,110 285,100 C285,80 270,50 250,50 Z"
@@ -285,12 +301,25 @@
         <div class="bg-[#1a1a1a] w-full sm:w-full sm:max-w-lg rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl transform translate-y-full transition-transform duration-300 max-h-[85vh] flex flex-col border border-white/10"
             id="exercise-panel-content">
 
-            <div
-                class="p-6 border-b border-white/5 flex justify-between items-center bg-[#131313] rounded-t-[2rem] shrink-0">
-                <h3 class="text-xl font-black text-white uppercase italic">Exercices Liés</h3>
-                <button onclick="closeExercises()" class="p-2 bg-white/5 rounded-full hover:bg-white/10 text-white">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
+            <div class="p-6 border-b border-white/5 bg-[#131313] rounded-t-[2rem] shrink-0">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-black text-white uppercase italic">Exercices Liés</h3>
+                    <button onclick="closeExercises()" class="p-2 bg-white/5 rounded-full hover:bg-white/10 text-white">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="flex gap-2 overflow-x-auto hide-scrollbar">
+                    <button onclick="setFilter('all')" data-level="all"
+                        class="filter-tab px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-white text-black transition-colors">Tous</button>
+                    <button onclick="setFilter('debutant')" data-level="debutant"
+                        class="filter-tab px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-white/10 text-white transition-colors">Débutant</button>
+                    <button onclick="setFilter('intermediaire')" data-level="intermediaire"
+                        class="filter-tab px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-white/10 text-white transition-colors">Intermédiaire</button>
+                    <button onclick="setFilter('avance')" data-level="avance"
+                        class="filter-tab px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-white/10 text-white transition-colors">Avancé</button>
+                </div>
             </div>
 
             <div id="exercise-list" class="p-6 overflow-y-auto space-y-4 hide-scrollbar">
@@ -312,61 +341,10 @@
             resetZoom();
         }
 
-        function showExercises() {
-            if (!activeMuscle) return;
-            const data = MUSCLE_DATA[activeMuscle];
-            if (!data || !data.relatedExercises) {
-                alert("Aucun exercice spécifique lié pour le moment.");
-                return;
-            }
-
-            const list = document.getElementById('exercise-list');
-            list.innerHTML = '';
-
-            // Map IDs to DB objects
-            const dbArray = Object.values(EXERCISES_DB);
-
-            data.relatedExercises.forEach(exId => {
-                const exercise = dbArray.find(e => e.id === exId);
-                if (exercise) {
-                    const html = `
-                    <div class="bg-black/30 rounded-xl overflow-hidden border border-white/5">
-                        <div class="relative h-48 bg-black">
-                             <iframe src="${exercise.video}" class="absolute inset-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                        <div class="p-4">
-                            <h4 class="font-bold text-white text-lg mb-2">${exercise.name}</h4>
-                            <p class="text-sm text-gray-400 mb-2"><strong class="text-white">Instructions:</strong> ${exercise.instructions}</p>
-                            <div class="flex items-center gap-2 mt-2">
-                                <span class="text-[10px] uppercase font-bold text-primary bg-primary/10 px-2 py-1 rounded">Recommandé</span>
-                            </div>
-                        </div>
-                    </div>
-                    `;
-                    list.innerHTML += html;
-                }
-            });
-
-            const panel = document.getElementById('exercise-panel');
-            const content = document.getElementById('exercise-panel-content');
-
-            // Re-enable clicks when opening
-            panel.classList.remove('pointer-events-none', 'opacity-0');
-
-            setTimeout(() => {
-                content.style.transform = 'translateY(0)';
-            }, 10);
-        }
-
-        function closeExercises() {
-            const panel = document.getElementById('exercise-panel');
-            const content = document.getElementById('exercise-panel-content');
-
-            content.style.transform = 'translateY(100%)';
-            setTimeout(() => {
-                panel.classList.add('opacity-0', 'pointer-events-none');
-            }, 300);
-        }
+        // Note: showExercises and closeExercises logic is now in body-map-logic.js
+        // We ensure button onClick calls are valid since body-map-logic.js defines them globally (if not inside module).
+        // Since my previous replace of body-map-logic.js defined them in global scope (no module wrapper), clear existing inline script if dupes.
+        // Actually, the previous file body-map.html had inline script for showExercises. I should clean that up.
     </script>
 </body>
 

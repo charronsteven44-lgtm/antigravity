@@ -6,7 +6,6 @@ const MUSCLE_DATA = {
         insertion: "Humérus (tubérosité deltoïdienne)",
         action: "Flexion et rotation interne du bras.",
         description: "Muscle principal de l'épaule donnant le galbe. La portion antérieure est sollicitée dans les mouvements de poussée.",
-        relatedExercises: ["push_day", "fullbody"]
     },
     "pectoral_major": {
         name: "Grand Pectoral",
@@ -14,7 +13,6 @@ const MUSCLE_DATA = {
         insertion: "Humérus (sillon bicipital)",
         action: "Adduction et rotation interne du bras.",
         description: "Puissant muscle du thorax, essentiel pour les mouvements d'étreinte et de poussée vers l'avant.",
-        relatedExercises: ["push_day", "fullbody"]
     },
     "biceps": {
         name: "Biceps Brachial",
@@ -22,7 +20,6 @@ const MUSCLE_DATA = {
         insertion: "Radius (tubérosité radiale)",
         action: "Flexion du coude et supination.",
         description: "Muscle à deux chefs situé à l'avant du bras, emblème de la force de flexion.",
-        relatedExercises: ["pull_day", "fullbody"]
     },
     "brachialis": {
         name: "Brachial Antérieur",
@@ -30,7 +27,6 @@ const MUSCLE_DATA = {
         insertion: "Ulna (cubitus)",
         action: "Flexion pure du coude.",
         description: "Situé sous le biceps, c'est le fléchisseur le plus puissant du coude, donnant du volume au bras.",
-        relatedExercises: ["pull_day"]
     },
     "serratus": {
         name: "Dentelé Antérieur",
